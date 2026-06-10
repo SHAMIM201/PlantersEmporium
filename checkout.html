@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Checkout</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1 style="text-align:center;">Checkout</h1>
+
+<div class="checkout-form">
+
+<input type="text" placeholder="Full Name">
+<br><br>
+
+<input type="tel" placeholder="Mobile Number">
+<br><br>
+
+<input type="text" placeholder="Address">
+<br><br>
+
+<input type="text" placeholder="City">
+<br><br>
+
+<input type="text" placeholder="Pincode">
+<br><br>
+
+<button id="pay-btn" class="order-btn">
+    <h3>Select Payment Method</h3>
+
+<label>
+<input type="radio" name="payment" checked>
+UPI Payment
+</label>
+
+<br><br>
+
+<label>
+<input type="radio" name="payment">
+Credit / Debit Card
+</label>
+
+<br><br>
+
+<label>
+<input type="radio" name="payment">
+Cash On Delivery
+</label>
+
+<br><br>
+Pay Now
+</button>
+
+</div>
+
+<script>
+    localStorage.removeItem("cart");
+localStorage.removeItem("cartCount");
+function demoPayment(){
+
+alert("Demo Payment Successful");
+
+window.location.href="success.html";
+
+}
+
+document.getElementById("pay-btn")
+.addEventListener("click",demoPayment);
+</script>
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Shopping Cart</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1 style="text-align:center;margin-top:30px;">
+Shopping Cart
+</h1>
+
+<div class="cart-container">
+
+<div id="cart-items"></div>
+
+<div class="cart-total">
+
+<h2>
+Total Products :
+<span id="total-products">0</span>
+</h2>
+
+<br>
+
+<button onclick="clearCart()"
+class="order-btn">
+Empty Cart </button>
+
+<br><br>
+
+<a href="checkout.html"
+class="order-btn">
+Proceed To Checkout </a>
+
+</div>
+
+</div>
+
+
+
+function removeItem(index){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.splice(index,1);
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+localStorage.setItem(
+"cartCount",
+cart.length
+);
+
+location.reload();
+
+}
+
+function clearCart(){
+
+localStorage.removeItem("cart");
+localStorage.removeItem("cartCount");
+
+location.reload();
+
+}
+
+</script>
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const summary =
+document.getElementById("order-summary");
+
+cart.forEach(product => {
+
+summary.innerHTML += `
+
+<div class="cart-item">
+
+<h3>${product}</h3>
+
+<p>Price On Request</p>
+
+</div>
+
+`;
+
+});
+
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

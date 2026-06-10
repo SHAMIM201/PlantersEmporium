@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planters Emporium</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="script.js">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<div id="productPopup" class="product-popup">
+
+<div class="popup-content">
+
+<span id="closePopup">&times;</span>
+
+<img id="popupImage">
+
+<h2 id="popupTitle"></h2>
+
+<p>Premium Quality Planter</p>
+
+<a href="https://wa.me/919810475303"
+class="order-btn">
+Order On WhatsApp
+</a>
+
+</div>
+
+</div>
+
+<body>
+<button id="topBtn">
+↑
+</button>
+    <div class="top-bar">
+        <div>📞 9810475303</div>
+        <div>📧 plantersemporium0786@gmail.com</div>
+        <div>GSTIN : 07BFGPA5432J1ZN</div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Logo">
+        </div>
+        <nav>
+      
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#categories">Categories</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+<a href="cart.html" class="cart-icon">
+🛒 Cart <span id="cart-count">0</span>
+</a>
+    </header>
+
+  <section class="search-section">
+    <div class="search-box">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search Pots, Planters, Accessories...">
+
+
+    <button>
+        <i class="fas fa-search"></i>
+    </button>
+</div>
+
+
+</section>
+
+
+    <section class="hero">
+        <div class="slide active">
+            <img src="images/banner1.jpeg">
+        </div>
+        <div class="slide">
+            <img src="images/banner2.jpeg">
+        </div>
+        <div class="slide">
+            <img src="images/banner3.jpeg">
+        </div>
+        <div class="slide">
+            <img src="images/banner4.jpeg">
+        </div>
+        <div class="hero-content">
+            <h1>Bring Nature To Your Space</h1>
+            <p>Premium Pots, Planters & Garden Accessories</p>
+            <a href="#products" class="btn">Shop Now</a>
+        </div>
+    </section>
+    <section class="benefits">
+
+<div class="benefit-card">
+🚚 Free Delivery
+</div>
+
+<div class="benefit-card">
+🌱 Premium Quality
+</div>
+
+<div class="benefit-card">
+🏭 Direct Manufacturer
+</div>
+
+<div class="benefit-card">
+💰 Wholesale Prices
+</div>
+
+</section>
+
+    <section class="trust">
+        <h2 class="title">Why Choose Us</h2>
+        <div class="trust-grid">
+            <div>
+                <h3>25+ Years Experience</h3>
+                <p>Trusted Manufacturer</p>
+            </div>
+            <div>
+                <h3>Wholesale Pricing</h3>
+                <p>Best Market Rates</p>
+            </div>
+            <div>
+                <h3>Premium Quality</h3>
+                <p>Strong & Durable Products</p>
+            </div>
+            <div>
+                <h3>Pan India Supply</h3>
+                <p>Fast Delivery Available</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="categories">
+        <h2 class="title">Shop By Category</h2>
+        <div class="category-grid">
+            <div class="category-card">
+                <img src="images/category1.jpeg">
+                <h3>Indoor Planters</h3>
+            </div>
+            <div class="category-card">
+                <img src="images/category2.jpeg">
+                <h3>Outdoor Planters</h3>
+            </div>
+            <div class="category-card">
+                <img src="images/category3.jpeg">
+                <h3>Decorative Pots</h3>
+            </div>
+            <div class="category-card">
+                <img src="images/category4.jpeg">
+                <h3>Hanging Planters</h3>
+            </div>
+        </div>
+    </section>
+
+    <section class="product-slider-section">
+        <h2 class="title">Featured Products</h2>
+        <div class="slider-container">
+            <button class="slide-btn prev">&#10094;</button>
+            <div class="slider-track">
+                <div class="slide-card">
+                    <span class="badge">BEST SELLER</span>
+                    <img src="images/pot1.jpeg">
+                    <h3>Plastic Pot</h3>
+                    <button class="add-cart-btn">
+                    Add To Cart
+                  </button>
+                </div>
+                <div class="slide-card">
+                    <img src="images/pot2.jpeg">
+                    <h3>Square Planter</h3>
+                    <button class="add-cart-btn">
+                     Add To Cart
+                   </button>
+                </div>
+                <div class="slide-card">
+                    <img src="images/pot3.jpeg">
+                    <h3>Designer Pot</h3>
+                   <button class="add-cart-btn">
+                Add To Cart
+                </button>
+                </div>
+                <div class="slide-card">
+                    <img src="images/pot4.jpeg">
+                    <h3>Garden Pot</h3>
+                     <button class="add-cart-btn">
+                   Add To Cart
+                  </button>
+                </div>
+                <div class="slide-card">
+                    <img src="images/pot5.jpeg">
+                    <h3>Watering Can</h3>
+                   <button class="add-cart-btn">
+Add To Cart
+</button>
+                </div>
+            </div>
+            <button class="slide-btn next">&#10095;</button>
+        </div>
+    </section>
+
+    <section id="products">
+        <h2 class="title">Best Sellers</h2>
+        <div class="product-grid">
+           <div class="product-card">
+    <img src="images/pot1.jpeg">
+    <h3>Orchid Square</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div>
+           <div class="product-card">
+    <img src="images/pot2.jpeg">
+    <h3>Water Tank</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div>
+          <div class="product-card">
+    <img src="images/pot3.jpeg">
+    <h3>Basket</h3>
+    <p class="price">Price On Request</p>
+ <button class="add-cart-btn">
+Add To Cart
+</button>
+</div><div class="product-card">
+    <img src="images/pot4.jpeg">
+    <h3>Hanging pot</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div><div class="product-card">
+    <img src="images/pot5.jpeg">
+    <h3>Square pot</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div><div class="product-card">
+    <img src="images/pot6.jpeg">
+    <h3>Kisti</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div><div class="product-card">
+    <img src="images/pot7.jpeg">
+    <h3>Lotus pot</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div><div class="product-card">
+    <img src="images/pot8.jpeg">
+    <h3>Mixer</h3>
+    <p class="price">Price On Request</p>
+   <button class="add-cart-btn">
+Add To Cart
+</button>
+</div>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2 class="title">Gallery</h2>
+        <div class="gallery-grid">
+            <img src="images/galery1.jpeg">
+            <img src="images/galery2.jpeg">
+            <img src="images/galery3.jpeg">
+            <img src="images/galery4.jpeg">
+            <img src="images/galery5.jpeg">
+            <img src="images/galery6.jpeg">
+        </div>
+    </section>
+    <section class="reviews">
+
+<h2 class="title">Customer Reviews</h2>
+
+<div class="reviews-grid">
+
+<div class="review-card">
+⭐⭐⭐⭐⭐
+<p>Excellent quality pots and planters. Very durable products.</p>
+<h4>- Surya prakash </h4>
+</div>
+
+<div class="review-card">
+⭐⭐⭐⭐⭐
+<p>Best wholesale prices and timely delivery.</p>
+<h4>- Girish</h4>
+</div>
+
+<div class="review-card">
+⭐⭐⭐⭐⭐
+<p>Wide range of garden accessories and premium planters.</p>
+<h4>- Monu</h4>
+</div>
+
+</div>
+
+</section>
+<section class="stats">
+
+<div class="stat-box">
+<h2>25+</h2>
+<p>Years Experience</p>
+</div>
+
+<div class="stat-box">
+<h2>5000+</h2>
+<p>Happy Customers</p>
+</div>
+
+<div class="stat-box">
+<h2>1000+</h2>
+<p>Products</p>
+</div>
+
+<div class="stat-box">
+<h2>Pan India</h2>
+<p>Supply</p>
+</div>
+
+</section>
+<section class="faq">
+
+<h2 class="title">Frequently Asked Questions</h2>
+
+<div class="faq-box">
+
+<h3>Do you supply all over India?</h3>
+<p>Yes, we supply pots and planters across India.</p>
+
+<h3>Do you offer wholesale pricing?</h3>
+<p>Yes, special pricing is available for bulk orders.</p>
+
+<h3>What products do you manufacture?</h3>
+<p>Pots, Planters, Garden Accessories, Nursery Products and more.</p>
+
+</div>
+
+</section>
+
+    <section id="about" class="about">
+        <h2>About Us</h2>
+        <p>
+            Planters Emporium Manufactured Of The Pots & Planters. All Kinds Of Garden Accessories. 
+            We Are Into Planters Business For Over 25 Years. We Are Manufacturer, Supplier, Exporter 
+            And Traders Of High Quality Garden Planters.
+        </p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>📞 9810475303</p>
+        <p>📧 plantersemporium0786@gmail.com</p>
+        <p>📍 Andheria Mode, Vasant Kunj Road, Near Chattarpur Metro Station, New Delhi - 110030</p>
+        <iframe
+src="https://www.google.com/maps?q=Andheria%20Mod%20Chattarpur%20Metro%20New%20Delhi&output=embed"
+width="100%"
+height="350"
+style="border:0;border-radius:15px;margin-top:20px;"
+allowfullscreen=""
+loading="lazy">
+</iframe>
+    </section>
+
+    <footer>
+        <p>© 2026 Planters Emporium</p>
+    </footer>
+
+    <a href="https://wa.me/919810475303" class="whatsapp" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="tel:9810475303"
+class="call-btn">
+
+<i class="fas fa-phone"></i>
+
+</a>
+
+<a href="https://www.instagram.com/planters_emporium_"
+class="instagram-btn"
+target="_blank">
+
+<i class="fab fa-instagram"></i>
+</a>
+<a href="https://www.facebook.com/share/1HAH3cxWHe/"
+class="facebook-btn"
+target="_blank">
+
+<i class="fab fa-facebook-f"></i>
+
+</a>
+
+<a href="https://youtube.com/@plantersemporium?si=PGlR9KgmMIxCZWSL"
+class="youtube-btn"
+target="_blank">
+
+<i class="fab fa-youtube"></i>
+
+</a>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Shopping Cart</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1 style="text-align:center;margin-top:30px;">
+Shopping Cart
+</h1>
+
+<div class="cart-container">
+
+<div id="cart-items"></div>
+
+<div class="cart-total">
+
+<h2>
+Total Products :
+<span id="total-products">0</span>
+</h2>
+
+<br>
+
+<button onclick="clearCart()"
+class="order-btn">
+Empty Cart </button>
+
+<br><br>
+
+<a href="checkout.html"
+class="order-btn">
+Proceed To Checkout </a>
+
+</div>
+
+</div>
+
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartItems =
+document.getElementById("cart-items");
+
+document.getElementById("total-products")
+.innerText = cart.length;
+
+
+
+let total = 0;
+
+cart.forEach((product,index)=>{
+
+total += product.price;
+
+cartItems.innerHTML += `
+
+<div class="cart-item">
+
+<h2>${product.name}</h2>
+
+<p>₹${product.price}</p>
+
+<button onclick="removeItem(${index})"
+class="order-btn">
+Remove </button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("total-amount")
+.innerText = total;
+
+
+function removeItem(index){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.splice(index,1);
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+localStorage.setItem(
+"cartCount",
+cart.length
+);
+
+location.reload();
+
+}
+
+function clearCart(){
+
+localStorage.removeItem("cart");
+localStorage.removeItem("cartCount");
+
+location.reload();
+
+}
+
+</script>
+
+
+</body>
+</html>

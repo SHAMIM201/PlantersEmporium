@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Order Successful</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<p id="order-number"></p>
+<body>
+
+<div class="success-box">
+
+<h1>🎉 Order Placed Successfully</h1>
+
+<p>
+Thank you for choosing Planters Emporium.
+</p>
+
+<a href="index.html" class="order-btn">
+Continue Shopping
+</a>
+
+</div>
+<script>
+
+let orderNo =
+"PE" + Math.floor(Math.random()*100000);
+
+document.getElementById("order-number")
+.innerText =
+"Order ID : " + orderNo;
+
+</script>
+
+</body>
+</html>
