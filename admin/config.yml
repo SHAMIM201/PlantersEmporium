@@ -1,5 +1,19 @@
 backend:
-  name: test-repo
+  name: github
+  repo: SHAMIM201/PlantersEmporium
+  branch: main
 
 media_folder: "images"
 public_folder: "/images"
+
+collections:
+  - name: "products"
+    label: "Products"
+    folder: "products"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Product Name", name: "title", widget: "string" }
+      - { label: "Price", name: "price", widget: "string" }
+      - { label: "Image", name: "image", widget: "image" }
+      - { label: "Description", name: "body", widget: "markdown" }
