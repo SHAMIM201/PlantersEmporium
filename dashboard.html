@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+</head>
+<body>
+
+<h2>Product Manager</h2>
+
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<input id="stock" placeholder="Stock">
+<input id="image" placeholder="Image URL">
+
+<button onclick="addProduct()">Add Product</button>
+
+<div id="products"></div>
+
+<script>
+
+let products =
+JSON.parse(localStorage.getItem("products")) || [];
+
+function save(){
+localStorage.setItem(
+"products",
+JSON.stringify(products)
+);
+showProducts();
+}
+
+function addProduct(){
+
+products.push({
+name:name.value,
+price:price.value,
+stock:stock.value,
+image:image.value
+});
+
+save();
+}
+
+function del(i){
+products.splice(i,1);
+save();
+}
+
+function showProducts(){
+
+let html="";
+
+products.forEach((p,i)=>{
+
+html+=`
+<div>
+<h3>${p.name}</h3>
+<p>₹${p.price}</p>
+<p>Stock: ${p.stock}</p>
+<button onclick="del(${i})">
+Delete
+</button>
+</div>
+`;
+
+});
+
+document.getElementById("products").innerHTML=html;
+}
+
+showProducts();
+
+</script>
+
+</body>
+</html>
