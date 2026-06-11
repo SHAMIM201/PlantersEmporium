@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login</title>
+</head>
+<body>
+
+<h2>Planters Emporium Admin</h2>
+
+<input type="text" id="user" placeholder="Username">
+<input type="password" id="pass" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<script>
+function login(){
+
+let u=document.getElementById("user").value;
+let p=document.getElementById("pass").value;
+
+if(u==="planters" && p==="Junaid@1011"){
+window.location="dashboard.html";
+}else{
+alert("Invalid Login");
+}
+}
+</script>
+
+</body>
+</html>
