@@ -1,29 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Admin Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planters Emporium Admin Login</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7f5;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.login-box{
+background:white;
+padding:30px;
+width:100%;
+max-width:400px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+margin-bottom:25px;
+color:#0b5d1e;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#0b5d1e;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#084716;
+}
+
+#message{
+margin-top:15px;
+text-align:center;
+color:red;
+font-size:14px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h2>Planters Emporium Admin</h2>
+<div class="login-box">
 
-<input type="text" id="user" placeholder="Username">
-<input type="password" id="pass" placeholder="Password">
+<h2>Admin Login</h2>
 
-<button onclick="login()">Login</button>
+<input
+type="email"
+id="email"
+placeholder="Enter Email">
 
-<script>
-function login(){
+<input
+type="password"
+id="password"
+placeholder="Enter Password">
 
-let u=document.getElementById("user").value;
-let p=document.getElementById("pass").value;
+<button onclick="login()">
+Login
+</button>
 
-if(u==="planters" && p==="Junaid@1011"){
-window.location="dashboard.html";
-}else{
-alert("Invalid Login");
+<p id="message"></p>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged
 }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+authDomain: "samim-d6b27.firebaseapp.com",
+projectId: "samim-d6b27",
+storageBucket: "samim-d6b27.firebasestorage.app",
+messagingSenderId: "147210923031",
+appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+window.location.href =
+"dashboard.html";
+
 }
+
+});
+
+window.login = async function(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+const message =
+document.getElementById("message");
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+window.location.href =
+"dashboard.html";
+
+}
+catch(error){
+
+message.innerText =
+"Invalid Email or Password";
+
+console.log(error);
+
+}
+
+};
+
 </script>
 
 </body>

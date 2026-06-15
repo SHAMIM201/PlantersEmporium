@@ -1,48 +1,125 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Product Details</title>
-<link rel="stylesheet" href="style.css">
-</head>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
 <div class="product-detail">
 
-<img src="images/pot1.jpeg">
+    <img src="images/pot1.jpeg" alt="Cup Planter">
+
+    <div class="detail-content">
+
+        <h1>Cup Planter</h1>
+
+        <p class="price">Price On Request</p>
+
+        <p>
+            Premium FRP planter suitable for home, office,
+            hotel, balcony, terrace and garden use.
+        </p>
+
+        <button class="order-btn" onclick="addToCart()">
+            Add To Cart
+        </button>
+
+        <button class="order-btn" onclick="buyNow()">
+            Buy Now
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function addToCart(){
+
+    let cart =
+    JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart.push({
+        name:"Cup Planter",
+        price:"Price On Request",
+        image:"images/pot1.jpeg"
+    });
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    alert("Product Added To Cart");
+
+}
+
+function buyNow(){
+
+    window.location.href="checkout.html";
+
+}
+
+</script>
+<script>
+
+let product =
+JSON.parse(
+localStorage.getItem("selectedProduct")
+);
+
+document.getElementById(
+"product-detail"
+).innerHTML = `
+
+<div class="product-detail">
+
+<img src="${product.image}">
 
 <div class="detail-content">
 
-<h1>Cup Planter</h1>
-<p class="price">Price On Request</p>
+<h1>${product.name}</h1>
 
-<button id="add-cart-btn" class="order-btn">
-Add To Cart
-</button>
-
-<button class="order-btn">
-Buy Now
-</button>
 <p class="price">
-Price On Request
+₹${product.price}
 </p>
 
-<p>
-Premium FRP planter suitable for
-home, office, hotel and garden use.
-</p>
+<button class="order-btn"
+onclick="addToCart()">
 
-<button class="order-btn">
 Add To Cart
-</button>
 
-<button class="order-btn">
-Buy Now
 </button>
 
 </div>
 
 </div>
+
+`;
+
+function addToCart(){
+
+let cart =
+JSON.parse(
+localStorage.getItem("cart")
+) || [];
+
+cart.push(product);
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+alert("Added To Cart");
+
+}
+
+</script>
 
 </body>
 </html>

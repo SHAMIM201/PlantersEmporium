@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,166 +13,200 @@
 
 <div class="checkout-form">
 
-<input type="text" placeholder="Full Name">
+<input type="text" id="name" placeholder="Full Name" required>
 <br><br>
 
-<input type="tel" placeholder="Mobile Number">
+<input type="tel" id="phone" placeholder="Mobile Number" required>
 <br><br>
 
-<input type="text" placeholder="Address">
+<input type="text" id="address" placeholder="Address" required>
 <br><br>
 
-<input type="text" placeholder="City">
+<input type="text" id="city" placeholder="City" required>
 <br><br>
 
-<input type="text" placeholder="Pincode">
+<input type="text" id="pincode" placeholder="Pincode" required>
 <br><br>
 
-<button id="pay-btn" class="order-btn">
-    <h3>Select Payment Method</h3>
+<h3>Select Payment Method</h3>
 
 <label>
-<input type="radio" name="payment" checked>
+<input type="radio" name="payment" value="UPI Payment" checked>
 UPI Payment
 </label>
 
 <br><br>
 
 <label>
-<input type="radio" name="payment">
+<input type="radio" name="payment" value="Credit / Debit Card">
 Credit / Debit Card
 </label>
 
 <br><br>
 
 <label>
-<input type="radio" name="payment">
+<input type="radio" name="payment" value="Cash On Delivery">
 Cash On Delivery
 </label>
 
 <br><br>
-Pay Now
+
+<button id="pay-btn" class="order-btn">
+Place Order
+</button>
+
+<br><br>
+
+<button onclick="sendWhatsAppOrder()" class="order-btn">
+Order On WhatsApp
 </button>
 
 </div>
 
-<script>
-    localStorage.removeItem("cart");
-localStorage.removeItem("cartCount");
-function demoPayment(){
+<script type="module">
 
-alert("Demo Payment Successful");
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
-window.location.href="success.html";
+import {
+  getFirestore,
+  collection,
+  addDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+  authDomain: "samim-d6b27.firebaseapp.com",
+  projectId: "samim-d6b27",
+  storageBucket: "samim-d6b27.firebasestorage.app",
+  messagingSenderId: "147210923031",
+  appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.placeOrder = async function(){
+
+try{
+
+const name = document.getElementById("name").value.trim();
+const phone = document.getElementById("phone").value.trim();
+const address = document.getElementById("address").value.trim();
+const city = document.getElementById("city").value.trim();
+const pincode = document.getElementById("pincode").value.trim();
+
+if(!name || !phone || !address || !city || !pincode){
+alert("Please fill all fields");
+return;
 }
 
-document.getElementById("pay-btn")
-.addEventListener("click",demoPayment);
-</script>
-<!DOCTYPE html>
+const paymentMethod =
+document.querySelector(
+'input[name="payment"]:checked'
+).value;
 
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Shopping Cart</title>
-<link rel="stylesheet" href="style.css">
-</head>
+const order = {
 
-<body>
+name,
+phone,
+address,
+city,
+pincode,
 
-<h1 style="text-align:center;margin-top:30px;">
-Shopping Cart
-</h1>
+paymentMethod,
 
-<div class="cart-container">
+cart:
+JSON.parse(localStorage.getItem("cart")) || [],
 
-<div id="cart-items"></div>
+status:"Pending",
 
-<div class="cart-total">
+createdAt:new Date()
 
-<h2>
-Total Products :
-<span id="total-products">0</span>
-</h2>
+};
 
-<br>
-
-<button onclick="clearCart()"
-class="order-btn">
-Empty Cart </button>
-
-<br><br>
-
-<a href="checkout.html"
-class="order-btn">
-Proceed To Checkout </a>
-
-</div>
-
-</div>
-
-
-
-function removeItem(index){
-
-let cart =
-JSON.parse(localStorage.getItem("cart")) || [];
-
-cart.splice(index,1);
-
-localStorage.setItem(
-"cart",
-JSON.stringify(cart)
+await addDoc(
+collection(db,"orders"),
+order
 );
-
-localStorage.setItem(
-"cartCount",
-cart.length
-);
-
-location.reload();
-
-}
-
-function clearCart(){
 
 localStorage.removeItem("cart");
 localStorage.removeItem("cartCount");
 
-location.reload();
+alert("Order Placed Successfully");
+
+window.location.href = "success.html";
+
+}
+catch(error){
+
+console.error(error);
+alert(error.message);
 
 }
 
-</script>
-<script>
+};
+
+window.sendWhatsAppOrder = function(){
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
-const summary =
-document.getElementById("order-summary");
+let message =
+"🌱 PLANTERS EMPORIUM ORDER%0A%0A";
 
-cart.forEach(product => {
+message +=
+"👤 Name: " +
+document.getElementById("name").value +
+"%0A";
 
-summary.innerHTML += `
+message +=
+"📞 Phone: " +
+document.getElementById("phone").value +
+"%0A";
 
-<div class="cart-item">
+message +=
+"📍 Address: " +
+document.getElementById("address").value +
+", " +
+document.getElementById("city").value +
+" - " +
+document.getElementById("pincode").value +
+"%0A%0A";
 
-<h3>${product}</h3>
+message += "🛒 Order Details:%0A";
 
-<p>Price On Request</p>
+let total = 0;
 
-</div>
+cart.forEach(item=>{
 
-`;
+let qty = item.quantity || 1;
+let itemTotal = item.price * qty;
+
+total += itemTotal;
+
+message +=
+`• ${item.name} x ${qty} = ₹${itemTotal}%0A`;
 
 });
+
+message +=
+`%0A💰 Total Amount = ₹${total}%0A`;
+
+window.open(
+`https://wa.me/919810475303?text=${message}`,
+"_blank"
+);
+
+};
+
+document
+.getElementById("pay-btn")
+.addEventListener("click", placeOrder);
 
 </script>
 
 </body>
 </html>
 
-</body>
-</html>

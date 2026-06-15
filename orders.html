@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders Dashboard</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+#searchPhone{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    margin-bottom:20px;
+    font-size:16px;
+}
+
+.order{
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.order h3{
+    margin-top:0;
+}
+
+button{
+    padding:8px 12px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.delete-btn{
+    background:#f44336;
+    color:white;
+}
+.view-btn{
+    background:#2196f3;
+    color:white;
+}
+
+.print-btn{
+    background:#4caf50;
+    color:white;
+}
+
+select{
+    padding:6px;
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<h1>Customer Orders</h1>
+
+<input
+type="text"
+id="searchPhone"
+placeholder="Search by Name or Phone Number"
+>
+
+<h3>Total Orders: <span id="totalOrders">0</span></h3>
+
+<div id="orders"></div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+    authDomain: "samim-d6b27.firebaseapp.com",
+    projectId: "samim-d6b27",
+    storageBucket: "samim-d6b27.firebasestorage.app",
+    messagingSenderId: "147210923031",
+    appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.showItems = async function(id){
+
+    alert("View Items Clicked: " + id);
+
+};
+
+window.printInvoice = async function(id){
+
+    alert("Print Invoice Clicked: " + id);
+
+};
+window.updateStatus = async function(id,status){
+
+    try{
+
+        await updateDoc(doc(db,"orders",id),{
+            status:status
+        });
+
+        loadOrders();
+
+    }catch(error){
+
+        console.error(error);
+        alert("Status update failed");
+
+    }
+};
+
+
+window.deleteOrder = async function(id){
+
+    if(!confirm("Delete this order?")) return;
+
+    try{
+
+        await deleteDoc(doc(db,"orders",id));
+
+        loadOrders();
+
+    }catch(error){
+
+        console.error(error);
+        alert("Delete failed");
+
+    }
+};
+
+async function loadOrders(){
+
+    const ordersDiv =
+    document.getElementById("orders");
+
+    ordersDiv.innerHTML = "Loading Orders...";
+
+    try{
+
+        const snapshot =
+        await getDocs(collection(db,"orders"));
+
+        const search =
+        document.getElementById("searchPhone")
+        .value
+        .toLowerCase();
+
+        document.getElementById("totalOrders")
+        .innerText = snapshot.size;
+
+        ordersDiv.innerHTML = "";
+
+        snapshot.forEach((docSnap)=>{
+
+            const order = docSnap.data();
+
+            if(
+                search &&
+                !(
+                    String(order.phone || "")
+                    .includes(search)
+                    ||
+                    String(order.name || "")
+                    .toLowerCase()
+                    .includes(search)
+                )
+            ){
+                return;
+            }
+
+            ordersDiv.innerHTML += `
+            <div class="order">
+
+                <h3>${order.name || "No Name"}</h3>
+
+                <p><b>Phone:</b> ${order.phone || ""}</p>
+
+                <p><b>Address:</b> ${order.address || ""}</p>
+
+                <p><b>City:</b> ${order.city || ""}</p>
+
+                <p><b>Pincode:</b> ${order.pincode || ""}</p>
+
+                <p><b>Status:</b> ${order.status || "Pending"}</p>
+
+                <select onchange="updateStatus('${docSnap.id}',this.value)">
+
+                    <option value="Pending"
+                    ${(order.status==="Pending")?"selected":""}>
+                    Pending
+                    </option>
+
+                    <option value="Confirmed"
+                    ${(order.status==="Confirmed")?"selected":""}>
+                    Confirmed
+                    </option>
+
+                    <option value="Shipped"
+                    ${(order.status==="Shipped")?"selected":""}>
+                    Shipped
+                    </option>
+
+                    <option value="Delivered"
+                    ${(order.status==="Delivered")?"selected":""}>
+                    Delivered
+                    </option>
+
+                </select>
+
+                <br>
+<button
+class="view-btn"
+onclick="showItems('${docSnap.id}')">
+View Items
+</button>
+
+<button
+class="print-btn"
+onclick="printInvoice('${docSnap.id}')">
+Print Invoice
+</button>
+                <button
+                class="delete-btn"
+                onclick="deleteOrder('${docSnap.id}')">
+                Delete Order
+                </button>
+
+            </div>
+            `;
+        });
+
+    }catch(error){
+
+        console.error(error);
+
+        ordersDiv.innerHTML =
+        "<h3 style='color:red'>Failed to load orders. Check Firestore permissions.</h3>";
+    }
+}
+
+loadOrders();
+
+document
+.getElementById("searchPhone")
+.addEventListener("input",loadOrders);
+
+</script>
+
+</body>
+</html>

@@ -1,102 +1,481 @@
-    const prices = {
+const descriptions = {
 
-"Orchid Square": 499,
-"Water Tank": 899,
-"Basket": 299,
-"Hanging pot": 349,
-"Square pot": 599,
-"Kisti": 449,
-"Lotus pot": 399,
-"Mixer": 699,
+"Fiber glass pot":
+"Premium fiberglass planter. Durable and weather resistant.",
 
-"Plastic Pot": 299,
-"Square Planter": 499,
-"Designer Pot": 699,
-"Garden Pot": 799,
-"Watering Can": 249
+"Diamond Designer pot":
+"Elegant diamond pattern planter for indoor and outdoor use.",
+
+"Basket":
+"Decorative hanging basket for beautiful plants.",
+
+"Water Tank":
+"Heavy-duty water storage tank."
 
 };
 
-    // CART
+
+
+
+const prices = {
+  "Fiber glass pot": 999,
+  "Diamond Designer pot": 799,
+  "Corner Table Pot": 899,
+  "Boat Plant Pot": 699,
+  "Cup Plant Pot": 599,
+  "Orchid Square": 499,
+  "Water Tank": 899,
+  "Basket": 299,
+  "Hanging pot": 349,
+  "Square pot": 599,
+  "Kisti": 449,
+  "Lotus pot": 399,
+  "Mixer": 699,
+  "Plastic Pot": 299,
+  "Square Planter": 499,
+  "Designer Pot": 699,
+  "Garden Pot": 799,
+  "Watering Can": 249
+};
+
+// ==========================================
+// CART INITIALIZATION & UPDATES
+// ==========================================
+function updateCartCounter() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const totalCount = cart.reduce((sum, item) => {
+  return sum + (item?.quantity || 0);
+}, 0);
+  localStorage.setItem("cartCount", totalCount);
   
-let cartCount =
-parseInt(localStorage.getItem("cartCount")) || 0;
-
-const cartCounter =
-document.getElementById("cart-count");
-
-if(cartCounter){
-cartCounter.innerText = cartCount;
+  const cartCounter = document.getElementById("cart-count");
+  if (cartCounter) {
+    cartCounter.innerText = totalCount;
+  }
 }
 
-document.querySelectorAll(".add-cart-btn").forEach(btn=>{
+// Global function to update items quantity inside localStorage cart
+window.changeQuantity = function(name, price, image, action) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let productIndex = cart.findIndex(item => item.name === name);
 
-btn.addEventListener("click",()=>{
+  if (action === "plus") {
+    if (productIndex > -1) {
+      cart[productIndex].quantity += 1;
+    } else {
+      cart.push({ name, price, image, quantity: 1 });
+    }
+  } else if (action === "minus") {
+    if (productIndex > -1) {
+      cart[productIndex].quantity -= 1;
+      if (cart[productIndex].quantity <= 0) {
+        cart.splice(productIndex, 1);
+      }
+    }
+  }
 
-cartCount++;
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCounter();
+  
+  const updatedProduct = cart.find(item => item.name === name);
+  return updatedProduct ? updatedProduct.quantity : 0;
+};
 
-if(cartCounter){
-cartCounter.innerText = cartCount;
+// Initial Load
+updateCartCounter();
+
+// ==========================================
+// SEARCH BAR FUNCTIONALITY
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+function similarity(a, b){
+
+a = a.toLowerCase();
+b = b.toLowerCase();
+
+if(b.includes(a)) return 1;
+
+let score = 0;
+
+for(let char of a){
+   if(b.includes(char)){
+      score++;
+   }
 }
+
+return score / a.length;
+
+}
+function performSearch() {
+
+const filterValue =
+searchInput.value.toLowerCase().trim();
+
+const cards =
+document.querySelectorAll(
+".product-card, .slide-card"
+);
+
+let visibleCount = 0;
+
+cards.forEach(card => {
 
 const productName =
-btn.parentElement.querySelector("h3").innerText;
+card.querySelector("h3")
+?.innerText.toLowerCase() || "";
 
+if (
+filterValue === "" ||
+productName.includes(filterValue)
+) {
+
+card.style.display = "";
+visibleCount++;
+
+} else {
+
+card.style.display = "none";
+
+}
+
+});
+
+const noResults =
+document.getElementById("noResults");
+
+if(noResults){
+
+if(visibleCount === 0 && filterValue !== ""){
+   noResults.style.display = "block";
+}else{
+   noResults.style.display = "none";
+}
+
+}
+
+}
+ 
+if (searchInput) {
+
+  searchInput.addEventListener("input", performSearch);
+
+  searchInput.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") {
+      performSearch();
+    }
+  });
+
+}
+
+  if (searchBtn) {
+    searchBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      performSearch();
+    });
+  }
+});
+let allProducts = [];
+// ==========================================
+// FIREBASE STORE INTEGRATION
+// ==========================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+  authDomain: "samim-d6b27.firebaseapp.com",
+  projectId: "samim-d6b27",
+  storageBucket: "samim-d6b27.firebasestorage.app",
+  messagingSenderId: "147210923031",
+  appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+async function loadFeaturedProducts() {
+
+const featuredTrack =
+document.getElementById("featuredProducts");
+
+if(!featuredTrack) return;
+
+featuredTrack.innerHTML = "";
+
+try {
+
+const snapshot =
+await getDocs(collection(db, "products"));
+
+snapshot.forEach((doc) => {
+
+const product = doc.data();
+allProducts.push({
+    name: product.name,
+    price: product.price,
+    image: product.image
+});
+
+if(product.featured !== true) return;
+
+featuredTrack.innerHTML += `
+<div class="slide-card"
+data-name="${product.name}"
+data-price="${product.price}"
+data-image="${product.image}">
+
+<img src="${product.image}" alt="${product.name}">
+
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+<div class="cart-control">
+
+<button class="add-btn">
+Add +
+</button>
+
+<div class="qty-box" style="display:none;">
+<button class="qty-btn minus">−</button>
+<span class="qty-number">0</span>
+<button class="qty-btn plus">+</button>
+</div>
+
+</div>
+
+</div>
+`;
+
+});
+
+setupQuantityButtons();
+initializeFeaturedSlider();
+
+} catch(error) {
+
+console.log(error);
+
+}
+
+}
+async function loadFirebaseProducts() {
+  const productGrid = document.getElementById("bestSellerProducts");
+  if (!productGrid) return;
+
+  productGrid.innerHTML = "";
+
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    snapshot.forEach((doc) => {
+      const product = doc.data();
+      if(product.bestseller !== true) return;
+      const cartItem = cart.find(item => item.name === product.name);
+      const currentQty = cartItem ? cartItem.quantity : 0;
+productGrid.innerHTML += `
+<div class="product-card"
+data-name="${product.name}"
+data-price="${product.price}"
+data-image="${product.image}">
+
+<img src="${product.image}" alt="${product.name}">
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+<div class="cart-control">
+
+    <button class="add-btn">
+        Add +
+    </button>
+
+    <div class="qty-box" style="display:none;">
+        <button class="qty-btn minus">−</button>
+        <span class="qty-number">1</span>
+        <button class="qty-btn plus">+</button>
+    </div>
+
+</div>
+
+</div>
+`;
+    });
+
+    setupQuantityButtons();
+
+  } catch(error) {
+    console.error("Firebase Error:", error);
+  }
+}
+
+function setupQuantityButtons() {
+
+document.querySelectorAll(".cart-control").forEach(control => {
+
+if(control.dataset.loaded) return;
+
+control.dataset.loaded = "true";
+
+const addBtn = control.querySelector(".add-btn");
+const buyNow =
+control.querySelector(".buy-now-btn");
+const qtyBox = control.querySelector(".qty-box");
+
+const minus = control.querySelector(".minus");
+const plus = control.querySelector(".plus");
+const qty = control.querySelector(".qty-number");
+
+let count = 0;
+
+addBtn.addEventListener("click", () => {
+
+count = 1;
+
+addBtn.style.display = "none";
+qtyBox.style.display = "flex";
+
+qty.innerText = count;
+const card =
+control.closest(".product-card") ||
+control.closest(".slide-card");
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
-cart.push({
-name: productName,
-price: prices[productName]
-});
+const existing = cart.find(
+item => item.name === card.dataset.name
+);
+
+if(existing){
+    existing.quantity += 1;
+}else{
+    cart.push({
+        name: card.dataset.name,
+        price: parseInt(card.dataset.price),
+        image: card.dataset.image,
+        quantity: 1
+    });
+}
+
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)
 );
 
-localStorage.setItem(
-"cartCount",
-cartCount
-);
+let cartCount =
+parseInt(localStorage.getItem("cartCount")) || 0;
 
-alert(productName + " Added To Cart");
+cartCount++;
+
+localStorage.setItem("cartCount", cartCount);
+
+document.getElementById("cart-count").innerText =
+cartCount;
 
 });
 
-});
-// ==========================================
-// SEARCH BAR
-// ==========================================
+plus.addEventListener("click", () => {
 
-const searchInput =
-document.getElementById("searchInput");
+count++;
+qty.innerText = count;
 
-if(searchInput){
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
 
-searchInput.addEventListener("keyup", function(){
+const card =
+control.closest(".product-card") ||
+control.closest(".slide-card");
 
-let searchValue =
-this.value.toLowerCase();
+const name = card.dataset.name;
+const price = parseInt(card.dataset.price);
+const image = card.dataset.image;
 
-const products =
-document.querySelectorAll(
-".product-card, .slide-card"
+const existing = cart.find(
+item => item.name === name
 );
 
-products.forEach(product => {
-
-let productName =
-product.querySelector("h3")
-.innerText
-.toLowerCase();
-
-if(productName.includes(searchValue)){
-
-product.style.display = "block";
-
+if(existing){
+    existing.quantity += 1;
 }else{
+    cart.push({
+        name,
+        price,
+        image,
+        quantity: 1
+    });
+}
 
-product.style.display = "none";
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+updateCartCounter();
+
+});
+
+minus.addEventListener("click", () => {
+
+if(count > 0){
+
+count--;
+
+if(count === 0){
+
+qtyBox.style.display = "none";
+addBtn.style.display = "inline-block";
+
+}
+
+qty.innerText = count;
+
+let cartCount =
+parseInt(localStorage.getItem("cartCount")) || 0;
+
+if(cartCount > 0){
+
+cartCount--;
+
+localStorage.setItem("cartCount", cartCount);
+
+document.getElementById("cart-count").innerText =
+cartCount;
+
+}
+
+}
+if(buyNow){
+
+buyNow.addEventListener("click",()=>{
+
+const card =
+control.closest(".product-card") ||
+control.closest(".slide-card");
+
+let cart = [];
+
+cart.push({
+name: card.dataset.name,
+price: parseInt(card.dataset.price),
+image: card.dataset.image,
+quantity: 1
+});
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+window.location.href =
+"checkout.html";
+
+});
 
 }
 
@@ -105,3 +484,337 @@ product.style.display = "none";
 });
 
 }
+
+
+// Script Execute Functions
+loadFeaturedProducts();
+loadFirebaseProducts();
+// Dynamic attachment for hardcoded elements (Featured section)
+document.addEventListener("DOMContentLoaded", setupQuantityButtons);
+// PRODUCT POPUP
+
+document.addEventListener("click", function(e){
+
+const card =
+e.target.closest(".slide-card, .product-card");
+
+if(!card) return;
+
+if(
+e.target.classList.contains("add-btn") ||
+e.target.classList.contains("plus") ||
+e.target.classList.contains("minus")
+){
+return;
+}
+
+console.log("POPUP WORKING");
+
+const image =
+card.querySelector("img").src;
+
+const title =
+card.querySelector("h3").innerText;
+
+document.getElementById("popupImage").src =
+image;
+document.getElementById("popupTitle").innerText =
+title;
+
+const price = card.dataset.price;
+
+document.getElementById("popupPrice").innerText =
+"₹" + price;
+
+const whatsappMessage =
+`Hello Planters Emporium,
+
+I want to order:
+
+Product: ${title}
+Price: ₹${price}
+
+Please share details.`;
+
+document.querySelector(".order-btn").href =
+`https://wa.me/919810475303?text=${encodeURIComponent(whatsappMessage)}`;
+
+document.getElementById("popupDescription").innerText =
+descriptions[title] ||
+"Premium Quality Planter";
+
+document.getElementById("productPopup")
+.style.display = "flex";
+
+});
+
+const closeBtn =
+document.getElementById("closePopup");
+
+if(closeBtn){
+
+closeBtn.addEventListener("click",()=>{
+
+document.getElementById("productPopup")
+.style.display = "none";
+
+});
+
+
+}
+// ==========================================
+// FEATURED PRODUCTS INFINITE SLIDER
+// ==========================================
+
+function initializeFeaturedSlider() {
+
+const track =
+document.getElementById("featuredProducts");
+
+if(!track) return;
+
+const cards =
+Array.from(track.children);
+
+if(cards.length === 0) return;
+
+// Clone all cards
+cards.forEach(card => {
+
+const clone = card.cloneNode(true);
+
+const cartControl =
+clone.querySelector(".cart-control");
+
+if(cartControl){
+   cartControl.removeAttribute("data-loaded");
+}
+
+track.appendChild(clone);
+
+});
+
+setupQuantityButtons();
+
+let position = 0;
+const cardWidth = 320;
+
+setInterval(() => {
+
+position += cardWidth;
+
+track.style.transition =
+"transform 0.5s ease";
+
+track.style.transform =
+`translateX(-${position}px)`;
+
+if(position >= track.scrollWidth / 2){
+
+setTimeout(() => {
+
+track.style.transition =
+"none";
+
+position = 0;
+
+track.style.transform =
+"translateX(0px)";
+
+},500);
+
+}
+
+},3000);
+
+}
+// ==========================================
+// CATEGORY FILTER
+// ==========================================
+
+document.querySelectorAll(".category-card")
+.forEach(card => {
+
+card.addEventListener("click", async () => {
+
+const category =
+card.dataset.category;
+
+const section =
+document.getElementById(
+"categoryProductsSection"
+);
+
+const title =
+document.getElementById(
+"categoryTitle"
+);
+
+const grid =
+document.getElementById(
+"categoryProducts"
+);
+
+section.style.display = "block";
+
+title.innerText = category;
+
+grid.innerHTML = "";
+
+try{
+
+const snapshot =
+await getDocs(
+collection(db,"products")
+);
+
+snapshot.forEach((doc)=>{
+
+const product =
+doc.data();
+
+if(product.category !== category)
+return;
+
+grid.innerHTML += `
+<div class="product-card"
+data-name="${product.name}"
+data-price="${product.price}"
+data-image="${product.image}">
+
+<img src="${product.image}"
+alt="${product.name}">
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+<div class="cart-control">
+
+<button class="add-btn">
+Add +
+</button>
+
+<div class="qty-box" style="display:none;">
+<button class="qty-btn minus">−</button>
+<span class="qty-number">0</span>
+<button class="qty-btn plus">+</button>
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+setupQuantityButtons();
+window.scrollTo({
+top: section.offsetTop - 100,
+behavior: "smooth"
+});
+
+}catch(error){
+
+console.log(error);
+
+}
+
+});
+
+});
+// ==========================================
+// GALLERY POPUP
+// ==========================================
+
+document.querySelectorAll(".gallery-grid img")
+.forEach(img => {
+
+img.addEventListener("click", () => {
+
+document.getElementById("galleryPopupImg").src =
+img.src;
+
+document.getElementById("galleryPopup").style.display =
+"flex";
+
+});
+
+});
+
+document.getElementById("closeGallery")
+.addEventListener("click", () => {
+
+document.getElementById("galleryPopup").style.display =
+"none";
+
+});
+const topBtn = document.getElementById("topBtn");
+
+if(topBtn){
+
+topBtn.addEventListener("click", () => {
+
+window.scrollTo({
+top: 0,
+behavior: "smooth"
+});
+
+});
+
+}
+// HERO BANNER SLIDER
+
+let currentSlide = 0;
+
+const slides =
+document.querySelectorAll(".hero .slide");
+
+function showSlide(index){
+
+slides.forEach(slide=>{
+slide.classList.remove("active");
+});
+
+slides[index].classList.add("active");
+
+}
+
+setInterval(()=>{
+
+currentSlide++;
+
+if(currentSlide >= slides.length){
+currentSlide = 0;
+}
+
+showSlide(currentSlide);
+
+},2000);
+const menuBtn = document.getElementById("menuBtn");
+const navbar = document.getElementById("navbar");
+
+menuBtn.addEventListener("click", () => {
+    navbar.classList.toggle("active");
+});
+const track = document.querySelector(".reviews-track");
+
+function rotateReviews() {
+
+    const firstCard = track.firstElementChild;
+
+    track.style.transition = "transform 0.8s ease";
+    track.style.transform = "translateX(-320px)";
+
+    setTimeout(() => {
+
+        track.style.transition = "none";
+        track.appendChild(firstCard);
+
+        track.style.transform = "translateX(0)";
+
+    }, 800);
+
+}
+

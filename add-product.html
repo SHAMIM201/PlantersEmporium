@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Add Product</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+max-width:600px;
+margin:30px auto;
+padding:20px;
+}
+
+input,select,button{
+width:100%;
+padding:12px;
+margin:10px 0;
+box-sizing:border-box;
+}
+
+button{
+background:#28a745;
+color:white;
+border:none;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#218838;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Add Product</h1>
+
+<input type="text" id="name" placeholder="Product Name">
+
+<input type="number" id="price" placeholder="Price">
+
+<select id="category">
+
+<option value="">Select Category</option>
+
+<option value="Indoor Planters">
+Indoor Planters
+</option>
+
+<option value="Outdoor Planters">
+Outdoor Planters
+</option>
+
+<option value="Decorative Pots">
+Decorative Pots
+</option>
+
+<option value="Hanging Planters">
+Hanging Planters
+</option>
+
+</select>
+
+<input type="file" id="image">
+
+<label>
+<input type="checkbox" id="featured">
+Featured Product
+</label>
+
+<br><br>
+
+<label>
+<input type="checkbox" id="bestseller">
+Best Seller
+</label>
+
+<br><br>
+
+<button onclick="saveProduct()">
+Save Product
+</button>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+const firebaseConfig = {
+apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+authDomain: "samim-d6b27.firebaseapp.com",
+projectId: "samim-d6b27",
+storageBucket: "samim-d6b27.firebasestorage.app",
+messagingSenderId: "147210923031",
+appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+
+window.location.href = "admin.html";
+
+}
+
+});
+window.saveProduct = async function () {
+
+try {
+
+const file =
+document.getElementById("image").files[0];
+
+if(!file){
+alert("Please Select Image");
+return;
+}
+
+const formData = new FormData();
+
+formData.append("file", file);
+
+formData.append(
+"upload_preset",
+"plantersemporium"
+);
+
+const response = await fetch(
+"https://api.cloudinary.com/v1_1/da7pwkapr/image/upload",
+{
+method: "POST",
+body: formData
+}
+);
+
+const data = await response.json();
+
+if(!data.secure_url){
+throw new Error("Image Upload Failed");
+}
+
+await addDoc(collection(db,"products"),{
+
+name:
+document.getElementById("name").value,
+
+price:
+Number(
+document.getElementById("price").value
+),
+
+image:
+data.secure_url,
+
+category:
+document.getElementById("category").value,
+
+featured:
+document.getElementById("featured").checked,
+
+bestseller:
+document.getElementById("bestseller").checked,
+
+createdAt:
+new Date()
+
+});
+
+alert("Product Added Successfully");
+
+document.getElementById("name").value="";
+document.getElementById("price").value="";
+document.getElementById("image").value="";
+document.getElementById("featured").checked=false;
+document.getElementById("bestseller").checked=false;
+document.getElementById("category").selectedIndex=0;
+
+}
+catch(error){
+
+console.error(error);
+alert(error.message);
+
+}
+
+};
+
+</script>
+
+</body>
+</html>
+

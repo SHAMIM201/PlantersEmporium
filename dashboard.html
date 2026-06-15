@@ -1,74 +1,258 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>Dashboard</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+padding:20px;
+}
+
+.dashboard{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin:30px 0;
+}
+
+.card{
+color:white;
+padding:20px;
+border-radius:15px;
+width:200px;
+text-align:center;
+}
+
+.products{
+background:#0b5d1e;
+}
+
+.orders{
+background:#2d6a4f;
+}
+
+.revenue{
+background:#ff9800;
+}
+
+.order-btn{
+background:#0b5d1e;
+color:white;
+border:none;
+padding:15px 25px;
+border-radius:30px;
+cursor:pointer;
+font-size:18px;
+margin:10px 0;
+}
+
+.order-btn:hover{
+opacity:.9;
+}
+
+</style>
+
 </head>
 <body>
 
-<h2>Product Manager</h2>
+<h1>Planters Emporium Dashboard</h1>
 
-<input id="name" placeholder="Product Name">
-<input id="price" placeholder="Price">
-<input id="stock" placeholder="Stock">
-<input id="image" placeholder="Image URL">
+<div class="dashboard">
 
-<button onclick="addProduct()">Add Product</button>
+<div class="card products">
+<h2 id="totalProducts">0</h2>
+<p>Total Products</p>
+</div>
 
-<div id="products"></div>
+<div class="card orders">
+<h2 id="totalOrders">0</h2>
+<p>Total Orders</p>
+</div>
 
-<script>
+<div class="card revenue">
+<h2 id="totalRevenue">₹0</h2>
+<p>Total Revenue</p>
+</div>
 
-let products =
-JSON.parse(localStorage.getItem("products")) || [];
+</div>
 
-function save(){
-localStorage.setItem(
-"products",
-JSON.stringify(products)
-);
-showProducts();
+<a href="add-product.html">
+<button class="order-btn">
+Add Product
+</button>
+</a>
+
+<br><br>
+
+<a href="products-admin.html">
+<button class="order-btn">
+View Products
+</button>
+</a>
+
+<br><br>
+
+<a href="orders.html">
+<button class="order-btn">
+View Orders
+</button>
+</a>
+
+<br><br>
+
+<button class="order-btn" onclick="logout()">
+Logout
+</button>
+<hr style="margin:30px 0;">
+
+<h2>Recent Orders</h2>
+
+<div id="recentOrders">
+
+Loading Orders...
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+authDomain: "samim-d6b27.firebaseapp.com",
+projectId: "samim-d6b27",
+storageBucket: "samim-d6b27.firebasestorage.app",
+messagingSenderId: "147210923031",
+appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user)=>{
+
+if(!user){
+
+window.location.href = "admin.html";
+return;
+
 }
 
-function addProduct(){
+loadCounts();
 
-products.push({
-name:name.value,
-price:price.value,
-stock:stock.value,
-image:image.value
 });
 
-save();
-}
+async function loadCounts(){
 
-function del(i){
-products.splice(i,1);
-save();
-}
+try{
 
-function showProducts(){
+let revenue = 0;
+let recentHtml = "";
 
-let html="";
+let orderCount = 0;
 
-products.forEach((p,i)=>{
+const productsSnapshot =
+await getDocs(collection(db,"products"));
 
-html+=`
-<div>
-<h3>${p.name}</h3>
-<p>₹${p.price}</p>
-<p>Stock: ${p.stock}</p>
-<button onclick="del(${i})">
-Delete
-</button>
+const ordersSnapshot =
+await getDocs(collection(db,"orders"));
+
+ordersSnapshot.forEach((docSnap)=>{
+
+const order = docSnap.data();
+if(orderCount < 5){
+
+recentHtml += `
+<div style="
+border:1px solid #ddd;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+background:#f9f9f9;
+">
+
+<b>${order.name || "Customer"}</b><br>
+
+📞 ${order.phone || ""}<br>
+
+📍 ${order.city || ""}<br>
+
+Status:
+<b>${order.status || "Pending"}</b>
+
 </div>
 `;
 
-});
+orderCount++;
 
-document.getElementById("products").innerHTML=html;
 }
 
-showProducts();
+console.log(order);
+
+if(Array.isArray(order.cart)){
+
+order.cart.forEach((item)=>{
+
+revenue +=
+Number(item.price || 0) *
+Number(item.quantity || 0);
+
+});
+
+}
+
+});
+
+document.getElementById("totalProducts").innerText =
+productsSnapshot.size;
+
+document.getElementById("totalOrders").innerText =
+ordersSnapshot.size;
+
+document.getElementById("totalRevenue").innerText =
+"₹" + revenue.toLocaleString();
+document.getElementById("recentOrders").innerHTML =
+recentHtml || "No Orders Found";
+
+}
+catch(error){
+
+console.error(error);
+
+}
+
+}
+
+window.logout = async function(){
+
+await signOut(auth);
+
+window.location.href = "admin.html";
+
+};
 
 </script>
 

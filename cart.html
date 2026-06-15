@@ -1,5 +1,5 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -15,30 +15,31 @@ Shopping Cart
 
 <div class="cart-container">
 
-<div id="cart-items"></div>
+    <div id="cart-items"></div>
 
-<div class="cart-total">
+    <div class="cart-total">
 
-<h2>
-Total Products :
-<span id="total-products">0</span>
-</h2>
+        <h2>
+            Total Products :
+            <span id="total-products">0</span>
+        </h2>
 
-<br>
+        <br>
 
-<button onclick="clearCart()"
-class="order-btn">
-Empty Cart </button>
+        <button onclick="clearCart()" class="order-btn">
+            Empty Cart
+        </button>
 
-<br><br>
+        <br><br>
 
-<a href="checkout.html"
-class="order-btn">
-Proceed To Checkout </a>
+        <a href="checkout.html" class="order-btn">
+            Proceed To Checkout
+        </a>
+
+    </div>
 
 </div>
 
-</div>
 
 <script>
 
@@ -48,38 +49,84 @@ JSON.parse(localStorage.getItem("cart")) || [];
 const cartItems =
 document.getElementById("cart-items");
 
+let totalProducts = cart.reduce(
+(sum,item)=>sum + (item.quantity || 1),
+0
+);
+
 document.getElementById("total-products")
-.innerText = cart.length;
+.innerText = totalProducts;
 
+if(cart.length === 0){
 
+cartItems.innerHTML = `
+<h2 style="text-align:center;">
+Your Cart Is Empty
+</h2>
+`;
 
-let total = 0;
+}
 
 cart.forEach((product,index)=>{
 
-total += product.price;
-
 cartItems.innerHTML += `
 
-<div class="cart-item">
+<div class="cart-item"
+style="
+border:1px solid #ddd;
+padding:15px;
+margin:15px;
+border-radius:10px;
+">
+
+<img
+src="${product.image}"
+width="150"
+style="
+border-radius:10px;
+display:block;
+margin-bottom:10px;
+">
 
 <h2>${product.name}</h2>
 
 <p>₹${product.price}</p>
 
-<button onclick="removeItem(${index})"
+<div style="margin:10px 0;">
+
+<button onclick="changeQty(${index},-1)">
+−
+</button>
+
+<span style="padding:0 15px;">
+${product.quantity || 1}
+</span>
+
+<button onclick="changeQty(${index},1)">
++
+</button>
+
+</div>
+
+<p>
+Total : ₹${product.price * (product.quantity || 1)}
+</p>
+
+<button
+onclick="removeItem(${index})"
 class="order-btn">
-Remove </button>
+
+Remove
+
+</button>
 
 </div>
 
 `;
 
+
+
 });
-
-document.getElementById("total-amount")
-.innerText = total;
-
 
 function removeItem(index){
 
@@ -93,26 +140,40 @@ localStorage.setItem(
 JSON.stringify(cart)
 );
 
+location.reload();
+
+}
+function changeQty(index,value){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart[index].quantity =
+(cart[index].quantity || 1) + value;
+
+if(cart[index].quantity <= 0){
+    cart.splice(index,1);
+}
+
 localStorage.setItem(
-"cartCount",
-cart.length
+"cart",
+JSON.stringify(cart)
 );
 
 location.reload();
 
 }
-
 function clearCart(){
 
 localStorage.removeItem("cart");
-localStorage.removeItem("cartCount");
 
 location.reload();
 
 }
-
+console.log(
+JSON.parse(localStorage.getItem("cart"))
+);
 </script>
-
 
 </body>
 </html>
