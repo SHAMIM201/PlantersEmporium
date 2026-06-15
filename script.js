@@ -221,6 +221,7 @@ if(product.featured !== true) return;
 
 featuredTrack.innerHTML += `
 <div class="slide-card"
+data-id="${doc.id}"
 data-name="${product.name}"
 data-price="${product.price}"
 data-image="${product.image}">
@@ -278,7 +279,9 @@ async function loadFirebaseProducts() {
       const cartItem = cart.find(item => item.name === product.name);
       const currentQty = cartItem ? cartItem.quantity : 0;
 productGrid.innerHTML += `
+
 <div class="product-card"
+data-id="${doc.id}"
 data-name="${product.name}"
 data-price="${product.price}"
 data-image="${product.image}">
@@ -499,6 +502,15 @@ const card =
 e.target.closest(".slide-card, .product-card");
 
 if(!card) return;
+if(
+!e.target.classList.contains("add-btn") &&
+!e.target.classList.contains("plus") &&
+!e.target.classList.contains("minus")
+){
+    window.location.href =
+    `product.html?id=${card.dataset.id}`;
+    return;
+}
 
 if(
 e.target.classList.contains("add-btn") ||
@@ -677,7 +689,10 @@ if(product.category !== category)
 return;
 
 grid.innerHTML += `
+
+
 <div class="product-card"
+data-id="${doc.id}"
 data-name="${product.name}"
 data-price="${product.price}"
 data-image="${product.image}">

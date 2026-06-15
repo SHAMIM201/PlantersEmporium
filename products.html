@@ -52,8 +52,85 @@ font-weight:bold;
 
 <h1>Planters Emporium Products</h1>
 
-<div id="products"></div>
+<input
+type="text"
+id="searchBox"
+placeholder="Search products..."
+style="
+width:100%;
+max-width:500px;
+display:block;
+margin:20px auto;
+padding:12px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:10px;">
 
+<select
+id="categoryFilter"
+style="
+width:100%;
+max-width:500px;
+display:block;
+margin:20px auto;
+padding:12px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:10px;">
+
+<option value="">All Categories</option>
+
+<option value="Indoor Planters">
+Indoor Planters
+</option>
+
+<option value="Outdoor Planters">
+Outdoor Planters
+</option>
+
+<option value="Decorative Pots">
+Decorative Pots
+</option>
+
+<option value="Hanging Planters">
+Hanging Planters
+</option>
+
+</select>
+<select
+id="sortFilter"
+style="
+width:100%;
+max-width:500px;
+display:block;
+margin:20px auto;
+padding:12px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:10px;">
+
+<option value="">
+Sort By Price
+</option>
+
+<option value="low">
+Price: Low to High
+</option>
+
+<option value="high">
+Price: High to Low
+</option>
+
+</select>
+<p id="productCount"
+style="
+text-align:center;
+font-size:18px;
+font-weight:bold;
+margin-top:20px;">
+0 Products Found
+</p>
+<div id="products"></div>
 <script type="module">
 
 import { initializeApp }
@@ -82,6 +159,16 @@ const db = getFirestore(app);
 const productsDiv =
 document.getElementById("products");
 
+const searchBox =
+document.getElementById("searchBox");
+
+const categoryFilter =
+document.getElementById("categoryFilter");
+
+const sortFilter =
+document.getElementById("sortFilter");
+
+let allProducts = [];
 async function loadProducts(){
 
 const querySnapshot =
@@ -90,12 +177,18 @@ await getDocs(collection(db,"products"));
 querySnapshot.forEach((doc)=>{
 
 const product = doc.data();
+allProducts.push({
+id: doc.id,
+...product
+});
 
 productsDiv.innerHTML += `
 
-<div class="card">
+<div class="card"
+style="cursor:pointer"
+onclick="location.href='product.html?id=${doc.id}'">
 
-<img src="images/${product.image}">
+<img src="${product.image}">
 
 <h3>${product.name}</h3>
 
@@ -111,7 +204,95 @@ productsDiv.innerHTML += `
 
 }
 
-loadProducts();
+
+
+
+function renderProducts(){
+
+const search =
+searchBox.value.toLowerCase();
+
+const category =
+categoryFilter.value;
+const sort =
+sortFilter.value;
+
+productsDiv.innerHTML = "";
+let filteredProducts = allProducts
+.filter(product => {
+
+const matchSearch =
+product.name.toLowerCase().includes(search);
+
+const matchCategory =
+category === "" ||
+product.category === category;
+
+return matchSearch && matchCategory;
+
+});
+if(sort === "low"){
+
+filteredProducts.sort(
+(a,b)=>a.price-b.price
+);
+
+}
+
+if(sort === "high"){
+
+filteredProducts.sort(
+(a,b)=>b.price-a.price
+);
+
+}
+
+
+
+document.getElementById("productCount")
+.innerText =
+filteredProducts.length +
+" Products Found";
+
+filteredProducts.forEach(product => {
+
+productsDiv.innerHTML += `
+
+<div class="card"
+style="cursor:pointer"
+onclick="location.href='product.html?id=${product.id}'">
+
+<img src="${product.image}" alt="${product.name}">
+
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+searchBox.addEventListener("input", renderProducts);
+
+categoryFilter.addEventListener("change", renderProducts);
+sortFilter.addEventListener(
+"change",
+renderProducts
+);
+sortFilter.addEventListener(
+"change",
+renderProducts
+);
+
+loadProducts().then(() => {
+renderProducts();
+});
 
 </script>
 

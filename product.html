@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product | Planters Emporium</title>
+
+<meta name="description" content="Premium quality planter.">
+
+<link rel="stylesheet" href="style.css">
+<style>
+body{
+font-family:Poppins,sans-serif;
+padding:30px;
+background:#f5f5f5;
+}
+
+.product-container{
+max-width:1200px;
+margin:auto;
+display:flex;
+gap:40px;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.product-image{
+width:450px;
+border-radius:15px;
+}
+
+.product-info{
+flex:1;
+}
+
+.product-info h1{
+font-size:40px;
+margin-bottom:15px;
+}
+
+.price{
+font-size:35px;
+font-weight:bold;
+color:green;
+margin-bottom:20px;
+}
+
+.order-btn{
+display:inline-block;
+background:#25D366;
+color:white;
+padding:15px 30px;
+text-decoration:none;
+border-radius:10px;
+font-size:18px;
+font-weight:bold;
+}
+
+.order-btn:hover{
+opacity:.9;
+}
+</style>
+</head>
+
+<body>
+    <div style="
+max-width:1200px;
+margin:0 auto 20px auto;
+font-size:14px;">
+
+<a href="index.html">Home</a>
+&nbsp;>&nbsp;
+
+<a href="products.html">Products</a>
+&nbsp;>&nbsp;
+
+<span id="breadcrumbName">
+Loading...
+</span>
+
+</div>
+
+<div class="product-container">
+
+<img
+id="productImage"
+class="product-image">
+
+<div class="product-info">
+
+<h1 id="productName">
+Loading...
+</h1>
+
+<h2
+id="productPrice"
+class="price">
+</h2>
+
+<p id="productDescription">
+Premium Quality Planter
+</p>
+
+<a
+id="whatsappBtn"
+class="order-btn"
+target="_blank">
+Order On WhatsApp
+</a>
+
+</div>
+
+</div>
+
+<h2 style="
+margin-top:50px;
+margin-bottom:20px;
+font-size:32px;
+text-align:center;">
+Related Products
+</h2>
+<div id="relatedProducts"
+style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:20px;">
+</div>
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+
+import {
+getFirestore,
+doc,
+getDoc,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const firebaseConfig = {
+apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+authDomain: "samim-d6b27.firebaseapp.com",
+projectId: "samim-d6b27",
+storageBucket: "samim-d6b27.firebasestorage.app",
+messagingSenderId: "147210923031",
+appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const id =
+new URLSearchParams(
+window.location.search
+).get("id");
+
+if(id){
+
+const productRef =
+doc(db,"products",id);
+
+const productSnap =
+await getDoc(productRef);
+
+if(productSnap.exists()){
+    
+
+const product =
+productSnap.data();
+
+document.getElementById("productName")
+.innerText = product.name;
+document.getElementById("breadcrumbName")
+.innerText = product.name;
+
+document.getElementById("productImage")
+.src = product.image;
+
+document.getElementById("productPrice")
+.innerText = "₹" + product.price;
+
+document.title =
+product.name +
+" | Planters Emporium";
+document.querySelector(
+'meta[name="description"]'
+).content =
+`${product.name} available at Planters Emporium. Premium quality products at wholesale prices.`;
+
+document.getElementById("whatsappBtn")
+.href =
+`https://wa.me/919810475303?text=I want to order ${product.name}`;
+
+document.getElementById("productDescription").innerText =
+product.description ||
+`${product.name} is a premium quality product available at Planters Emporium. Durable, long lasting and available at wholesale prices. Contact us for bulk orders and delivery details.`;
+const schema = {
+"@context":"https://schema.org",
+"@type":"Product",
+"name": product.name,
+"image": product.image,
+"description": document.getElementById("productDescription").innerText,
+"offers":{
+"@type":"Offer",
+"price": product.price,
+"priceCurrency":"INR",
+"availability":"https://schema.org/InStock"
+}
+};
+
+const schemaScript = document.createElement("script");
+schemaScript.type = "application/ld+json";
+schemaScript.textContent = JSON.stringify(schema);
+document.head.appendChild(schemaScript);
+const relatedDiv =
+document.getElementById("relatedProducts");
+
+const snapshot =
+await getDocs(
+collection(db,"products")
+);
+
+let count = 0;
+
+snapshot.forEach((item)=>{
+
+if(count >= 4) return;
+
+if(item.id === id) return;
+
+const related =
+item.data();
+
+relatedDiv.innerHTML += `
+
+<div style="
+background:white;
+padding:15px;
+border-radius:15px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+cursor:pointer;"
+onclick="location.href='product.html?id=${item.id}'">
+
+<img
+src="${related.image}"
+style="
+width:100%;
+height:220px;
+object-fit:cover;
+border-radius:10px;">
+
+<h3>
+${related.name}
+</h3>
+
+<p style="
+color:green;
+font-weight:bold;">
+₹${related.price}
+</p>
+
+</div>
+
+`;
+
+count++;
+
+});
+}
+
+}
+
+</script>
+
+</body>
+</html>
