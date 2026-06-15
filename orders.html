@@ -137,82 +137,53 @@ console.log("ORDER DATA");
 console.log(order);
 console.log(order.cart);
 
+
 const oldStatus =
 order.status || "Pending";
-
-
-if(oldStatus !== status){
-
-const productsSnapshot =
-await getDocs(
-collection(db,"products")
-);
+if(
+status === "Cancelled" &&
+oldStatus !== "Cancelled"
+){
 
 for(const item of order.cart){
 
-productsSnapshot.forEach(
-async(productDoc)=>{
+const productRef =
+doc(db,"products",item.id);
+
+const productSnap =
+await getDoc(productRef);
+
+if(productSnap.exists()){
 
 const product =
-productDoc.data();
+productSnap.data();
 
-if(product.name === item.name){
-    console.log(
-"MATCH FOUND",
-product.name,
-item.name
-);
-
-let stock =
-product.stock || 0;
-
-if(
-oldStatus === "Pending" &&
-status === "Confirmed"
-){
-stock = stock - (item.quantity || 1);
-}
-
-if(
-oldStatus === "Confirmed" &&
-status === "Pending"
-){
-stock = stock + (item.quantity || 1);
-}
-
-if(
-oldStatus === "Confirmed" &&
-status === "Cancelled"
-){
-stock = stock + (item.quantity || 1);
-}
-console.log(
-"OLD STOCK:",
-product.stock
-);
-
-console.log(
-"NEW STOCK:",
-stock
-);
 await updateDoc(
-doc(
-db,
-"products",
-productDoc.id
-),
+productRef,
 {
-stock: stock
+stock:
+(product.stock || 0)
++
+(item.quantity || 1)
 }
 );
 
 }
 
+}
+
+}
+
+await updateDoc(orderRef,{
+status:status
 });
 
-}
+alert(
+"Old Status: " + oldStatus +
+"\nNew Status: " + status
+);
 
-}
+loadOrders();
 
 await updateDoc(orderRef,{
 status:status
@@ -241,44 +212,9 @@ if(!confirm("Delete this order?")) return;
 
 try{
 
-const orderRef = doc(db,"orders",id);
-
-const orderSnap = await getDoc(orderRef);
-
-const order = orderSnap.data();
-
-if(order.status === "Confirmed"){
-
-const productsSnapshot =
-await getDocs(collection(db,"products"));
-
-for(const item of order.cart){
-
-productsSnapshot.forEach(async(productDoc)=>{
-
-const product = productDoc.data();
-
-if(product.name === item.name){
-
-await updateDoc(
-doc(db,"products",productDoc.id),
-{
-stock:
-(product.stock || 0)
-+
-(item.quantity || 1)
-}
+await deleteDoc(
+doc(db,"orders",id)
 );
-
-}
-
-});
-
-}
-
-}
-
-await deleteDoc(orderRef);
 
 loadOrders();
 

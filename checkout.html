@@ -87,7 +87,10 @@ from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import {
   getFirestore,
   collection,
-  addDoc
+  addDoc,
+  doc,
+  getDoc,
+  updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -179,7 +182,35 @@ status:"Pending",
 createdAt:new Date()
 
 };
+for(const item of order.cart){
 
+const productRef =
+doc(db,"products",item.id);
+
+const productSnap =
+await getDoc(productRef);
+
+if(productSnap.exists()){
+
+const product =
+productSnap.data();
+
+await updateDoc(
+productRef,
+{
+stock:
+Math.max(
+0,
+(product.stock || 0)
+-
+(item.quantity || 1)
+)
+}
+);
+
+}
+
+}
 await addDoc(
 collection(db,"orders"),
 order
