@@ -90,7 +90,8 @@ import {
     getDocs,
     doc,
     updateDoc,
-    deleteDoc
+    deleteDoc,
+    getDoc
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -119,40 +120,176 @@ window.printInvoice = async function(id){
 
 };
 window.updateStatus = async function(id,status){
+console.log("Status Change");
+console.log(id);
+console.log(status);
+try{
 
-    try{
+const orderRef =
+doc(db,"orders",id);
 
-        await updateDoc(doc(db,"orders",id),{
-            status:status
-        });
+const orderSnap =
+await getDoc(orderRef);
 
-        loadOrders();
+const order =
+orderSnap.data();
+console.log("ORDER DATA");
+console.log(order);
+console.log(order.cart);
 
-    }catch(error){
+const oldStatus =
+order.status || "Pending";
 
-        console.error(error);
-        alert("Status update failed");
 
-    }
+if(oldStatus !== status){
+
+const productsSnapshot =
+await getDocs(
+collection(db,"products")
+);
+
+for(const item of order.cart){
+
+productsSnapshot.forEach(
+async(productDoc)=>{
+
+const product =
+productDoc.data();
+
+if(product.name === item.name){
+    console.log(
+"MATCH FOUND",
+product.name,
+item.name
+);
+
+let stock =
+product.stock || 0;
+
+if(
+oldStatus === "Pending" &&
+status === "Confirmed"
+){
+stock = stock - (item.quantity || 1);
+}
+
+if(
+oldStatus === "Confirmed" &&
+status === "Pending"
+){
+stock = stock + (item.quantity || 1);
+}
+
+if(
+oldStatus === "Confirmed" &&
+status === "Cancelled"
+){
+stock = stock + (item.quantity || 1);
+}
+console.log(
+"OLD STOCK:",
+product.stock
+);
+
+console.log(
+"NEW STOCK:",
+stock
+);
+await updateDoc(
+doc(
+db,
+"products",
+productDoc.id
+),
+{
+stock: stock
+}
+);
+
+}
+
+});
+
+}
+
+}
+
+await updateDoc(orderRef,{
+status:status
+});
+alert(
+"Old Status: " + oldStatus +
+"\nNew Status: " + status
+);
+
+
+loadOrders();
+
+}catch(error){
+
+console.error(error);
+alert("Status update failed");
+
+}
+
 };
 
 
 window.deleteOrder = async function(id){
 
-    if(!confirm("Delete this order?")) return;
+if(!confirm("Delete this order?")) return;
 
-    try{
+try{
 
-        await deleteDoc(doc(db,"orders",id));
+const orderRef = doc(db,"orders",id);
 
-        loadOrders();
+const orderSnap = await getDoc(orderRef);
 
-    }catch(error){
+const order = orderSnap.data();
 
-        console.error(error);
-        alert("Delete failed");
+if(order.status === "Confirmed"){
 
-    }
+const productsSnapshot =
+await getDocs(collection(db,"products"));
+
+for(const item of order.cart){
+
+productsSnapshot.forEach(async(productDoc)=>{
+
+const product = productDoc.data();
+
+if(product.name === item.name){
+
+await updateDoc(
+doc(db,"products",productDoc.id),
+{
+stock:
+(product.stock || 0)
++
+(item.quantity || 1)
+}
+);
+
+}
+
+});
+
+}
+
+}
+
+await deleteDoc(orderRef);
+
+loadOrders();
+
+}
+catch(error){
+
+console.error(error);
+alert("Delete failed");
+
+}
+
 };
 
 async function loadOrders(){
@@ -230,6 +367,10 @@ async function loadOrders(){
                     <option value="Delivered"
                     ${(order.status==="Delivered")?"selected":""}>
                     Delivered
+                    </option>
+                    <option value="Cancelled"
+                    ${(order.status==="Cancelled")?"selected":""}>
+                      Cancelled
                     </option>
 
                 </select>
