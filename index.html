@@ -1,10 +1,358 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Planters Emporium Admin</title>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <meta name="google-site-verification" content="QvQkV7z1cBbHqzA84pVPqa5cPJJIQeBhvhTRUUiiryE" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planters Emporium</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NHDB8LZE2N"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-NHDB8LZE2N');
+</script>
 </head>
 <body>
+
+    <div id="productPopup" class="product-popup">
+        <div class="popup-content">
+            <span id="closePopup">×</span>
+            <img id="popupImage" alt="Popup Product">
+            <h2 id="popupTitle"></h2>
+            <h3 id="popupPrice"
+           style="
+            color:#0b5d1e;
+             font-size:28px;
+                font-weight:bold;
+                ">
+                   ₹0
+                </h3>
+            <p id="popupDescription">
+                Premium Quality Planter
+              </p>
+
+         
+            <a href="https://wa.me/919810475303" class="order-btn">Order On WhatsApp</a>
+        </div>
+    </div>
+
+    <button id="topBtn">↑</button>
+
+    <div class="top-bar">
+        <div>📞 9810475303</div>
+        <div>📧 plantersemporium0786@gmail.com</div>
+        <div>GSTIN : 07BFGPA5432J1ZN</div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Logo">
+        </div>
+        <button id="menuBtn" class="menu-btn">
+        ☰
+    </button>
+
+        <nav id="navbar">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#categories">Categories</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <a href="cart.html" class="cart-icon">🛒 Cart <span id="cart-count">0</span></a>
+    </header>
+<section class="search-section">
+
+    <div class="google-search-box">
+
+        <i class="fas fa-search search-icon"></i>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search Planters, Pots, Accessories..."
+        >
+
+        <button id="searchBtn">
+            Search
+        </button>
+
+    </div>
+
+    <div id="searchSuggestions" class="search-suggestions"></div>
+
+</section>
+
+<div id="noResults" style="
+display:none;
+text-align:center;
+padding:20px;
+font-size:18px;
+font-weight:600;
+color:#666;">
+❌ No Products Found
+</div>
+    <section class="hero">
+        <div class="slide active"><img src="images/banner1.jpeg" alt="Banner 1"></div>
+        <div class="slide"><img src="images/banner2.jpeg" alt="Banner 2"></div>
+        <div class="slide"><img src="images/banner3.jpeg" alt="Banner 3"></div>
+        <div class="slide"><img src="images/banner4.jpeg" alt="Banner 4"></div>
+        <div class="hero-content">
+            <h1>Planters Emporium
+               </h1>
+            <p>Premium Pots, Planters & Garden Accessories</p>
+            <a href="#products" class="btn">Shop Now</a>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="benefit-card">🚚 Free Delivery within 5 km</div>
+        <div class="benefit-card">🌱 Premium Quality</div>
+        <div class="benefit-card">🏭 Direct Manufacturer</div>
+        <div class="benefit-card">💰 Wholesale Prices</div>
+    </section>
+
+    <section class="trust">
+        <h2 class="title">Why Choose Us</h2>
+        <div class="trust-grid">
+            <div>
+                <h3>25+ Years Experience</h3>
+                <p>Trusted Manufacturer</p>
+            </div>
+            <div>
+                <h3>Wholesale Pricing</h3>
+                <p>Best Market Rates</p>
+            </div>
+            <div>
+                <h3>Premium Quality</h3>
+                <p>Strong & Durable Products</p>
+            </div>
+            <div>
+                <h3>Pan India Supply</h3>
+                <p>Fast Delivery Available only 5 km from shop</p>
+            </div>
+        </div>
+    </section>
+
+   <section id="categories">
+    <h2 class="title">Shop By Category</h2>
+
+    <div class="category-grid">
+
+        <div class="category-card" data-category="Indoor Planters">
+            <img src="images/category1.jpeg" alt="Indoor Planters">
+            <h3>Indoor Planters</h3>
+        </div>
+
+        <div class="category-card" data-category="Outdoor Planters">
+            <img src="images/category2.jpeg" alt="Outdoor Planters">
+            <h3>Outdoor Planters</h3>
+        </div>
+
+        <div class="category-card" data-category="Decorative Pots">
+            <img src="images/category3.jpeg" alt="Decorative Pots">
+            <h3>Decorative Pots</h3>
+        </div>
+
+        <div class="category-card" data-category="Hanging Planters">
+            <img src="images/category4.jpeg" alt="Hanging Planters">
+            <h3>Hanging Planters</h3>
+        </div>
+
+    </div>
+</section>
+
+<section id="categoryProductsSection" style="display:none;">
+
+    <h2 class="title" id="categoryTitle">
+        Products
+    </h2>
+
+    <div class="product-grid" id="categoryProducts">
+    </div>
+
+</section>
+
+<section class="product-slider-section">
+    <h2 class="title">Featured Products</h2>
+
+    <div class="slider-container">
+
+        <button class="slide-btn prev">❮</button>
+
+        <div class="slider-track" id="featuredProducts">
+        </div>
+
+        <button class="slide-btn next">❯</button>
+
+    </div>
+</section>
+   <section id="products">
+
+    <h2 class="title">Best Sellers</h2>
+
+    <div id="bestSellerProducts" class="product-grid"></div>
+
+</section>
+
+    <section id="gallery">
+        <h2 class="title">Gallery</h2>
+        <div class="gallery-grid">
+            <img src="images/galery1.jpeg" alt="Gallery 1">
+            <img src="images/galery2.jpeg" alt="Gallery 2">
+            <img src="images/galery3.jpeg" alt="Gallery 3">
+            <img src="images/galery4.jpeg" alt="Gallery 4">
+            <img src="images/galery5.jpeg" alt="Gallery 5">
+            <img src="images/galery6.jpeg" alt="Gallery 6">
+        </div>
+    </section>
+    <div id="galleryPopup" class="gallery-popup">
+    <span id="closeGallery">×</span>
+    <img id="galleryPopupImg" src="">
+</div>
+
+    
+    <!-- REVIEWS SECTION -->
+
+<section class="reviews-slider">
+
+```
+<h2 class="title">Customer Reviews</h2>
+
+<div class="reviews-container">
+
+    <div class="reviews-track">
+
+        <div class="review-card">
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>Excellent quality pots and planters. Very durable and premium finish.</p>
+            <h4>— Surya Prakash</h4>
+        </div>
+
+        <div class="review-card">
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>Best wholesale prices and timely delivery. Highly recommended.</p>
+            <h4>— Girish</h4>
+        </div>
+
+        <div class="review-card">
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>Wide range of garden accessories and beautiful decorative planters.</p>
+            <h4>— Monu</h4>
+        </div>
+
+        <div class="review-card">
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>Very good customer service and excellent product quality.</p>
+            <h4>— Rahul Sharma</h4>
+        </div>
+
+        <div class="review-card">
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>Purchased multiple fiberglass planters. Quality exceeded expectations.</p>
+            <h4>— Amit Verma</h4>
+        </div>
+
+        <!-- Duplicate for smooth infinite loop -->
+
+        <div class="review-card">
+            <div class="rating">★★★★★</div>
+            <p>Excellent quality pots and planters. Very durable and premium finish.</p>
+            <h4>— Surya Prakash</h4>
+        </div>
+
+        <div class="review-card">
+            <div class="rating">★★★★★</div>
+            <p>Best wholesale prices and timely delivery. Highly recommended.</p>
+            <h4>— Girish</h4>
+        </div>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+
+    <section class="stats">
+        <div class="stat-box">
+            <h2>25+</h2>
+            <p>Years Experience</p>
+        </div>
+        <div class="stat-box">
+            <h2>5000+</h2>
+            <p>Happy Customers</p>
+        </div>
+        <div class="stat-box">
+            <h2>1000+</h2>
+            <p>Products</p>
+        </div>
+        <div class="stat-box">
+            <h2>Pan India</h2>
+            <p>Supply</p>
+        </div>
+    </section>
+
+    <section class="faq">
+        <h2 class="title">Frequently Asked Questions</h2>
+        <div class="faq-box">
+            <h3>Do you supply all over India?</h3>
+            <p>Yes, we supply pots and planters across India.</p>
+            <h3>Do you offer wholesale pricing?</h3>
+            <p>Yes, special pricing is available for bulk orders.</p>
+            <h3>What products do you manufacture?</h3>
+            <p>Pots, Planters, Garden Accessories, Nursery Products and more.</p>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <h2>About Us</h2>
+        <p>
+            Planters Emporium Manufactured Of The Pots & Planters. All Kinds Of Garden Accessories. 
+            We Are Into Planters Business For Over 25 Years. We Are Manufacturer, Supplier, Exporter 
+            And Traders Of High Quality Garden Planters.
+        </p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>📞 9810475303</p>
+        <p>📧 plantersemporium0786@gmail.com</p>
+        <p>📍 Andheria Mode, Vasant Kunj Road, Near Chattarpur Metro Station, New Delhi - 110030</p>
+        <iframe src="https://www.google.com/maps?q=Andheria%20Mod%20Chattarpur%20Metro%20New%20Delhi&output=embed" width="100%" height="350" style="border:0;border-radius:15px;margin-top:20px;" allowfullscreen="" loading="lazy"></iframe>
+    </section>
+
+   <footer class="footer">
+
+    <div class="footer-links">
+        <a href="#">Home</a>
+        <a href="#products">Products</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <p>
+        © 2026 Planters Emporium
+    </p>
+
+</footer>
+
+    <a href="https://wa.me/919810475303" class="whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <a href="tel:9810475303" class="call-btn"><i class="fas fa-phone"></i></a>
+    <a href="https://www.instagram.com/planters_emporium_" class="instagram-btn" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/share/1HAH3cxWHe/" class="facebook-btn" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://youtube.com/@plantersemporium?si=PGlR9KgmMIxCZWSL" class="youtube-btn" target="_blank"><i class="fab fa-youtube"></i></a>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
