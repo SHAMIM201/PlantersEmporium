@@ -383,12 +383,13 @@ if(existing){
     cart.push(existing);
 
 }else{
-    cart.push({
-        name: card.dataset.name,
-        price: parseInt(card.dataset.price),
-        image: card.dataset.image,
-        quantity: 1
-    });
+   cart.push({
+    id: card.dataset.id,
+    name: card.dataset.name,
+    price: parseInt(card.dataset.price),
+    image: card.dataset.image,
+    quantity: 1
+});
 }
 localStorage.setItem(
 "lastAddedImage",
@@ -432,10 +433,10 @@ const image = card.dataset.image;
 const existing = cart.find(
 item => item.name === name
 );
-
 if(existing){
 
     existing.quantity += 1;
+    existing.id = card.dataset.id;
 
     cart = cart.filter(
         item => item.name !== card.dataset.name
@@ -443,13 +444,16 @@ if(existing){
 
     cart.push(existing);
 
-}else{
+}
+
+else{
     cart.push({
-        name,
-        price,
-        image,
-        quantity: 1
-    });
+    id: card.dataset.id,
+    name,
+    price,
+    image,
+    quantity: 1
+});
 }
 localStorage.setItem(
 "lastAddedImage",
