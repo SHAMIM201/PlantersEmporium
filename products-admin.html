@@ -46,6 +46,18 @@ background:#007bff;
 .delete-btn{
 background:#dc3545;
 }
+.button-group{
+display:flex;
+justify-content:center;
+gap:8px;
+margin-top:15px;
+flex-wrap:wrap;
+}
+
+.button-group button{
+min-width:90px;
+font-weight:600;
+}
 </style>
 
 </head>
@@ -140,22 +152,27 @@ output += `
 <h3>${p.name}</h3>
 
 <p><b>₹${p.price}</b></p>
+<p>
+📦 Stock:
+<b>${p.stock || 0}</b>
+</p>
 
 <p>${p.category || ""}</p>
 <p>⭐ Featured: ${p.featured ? "Yes" : "No"}</p>
 
 <p>🔥 Best Seller: ${p.bestseller ? "Yes" : "No"}</p>
+<div class="button-group">
 
 <button
 class="edit-btn"
-onclick="editProduct('${docSnap.id}','${p.name}','${p.price}')">
+onclick="editProduct('${docSnap.id}','${p.name}','${p.price}','${p.stock || 0}')">
 Edit
 </button>
 
 <button
 class="edit-btn"
 onclick="changeImage('${docSnap.id}')">
-Change Image
+Image
 </button>
 
 <button
@@ -163,6 +180,8 @@ class="delete-btn"
 onclick="deleteProduct('${docSnap.id}')">
 Delete
 </button>
+
+</div>
 </div>
 `;
 
@@ -173,7 +192,7 @@ output || "<h3>No Products Found</h3>";
 
 }
 
-window.editProduct = async function(id,name,price){
+window.editProduct = async function(id,name,price,stock){
 
 const newName =
 prompt("Enter New Product Name",name);
@@ -184,10 +203,15 @@ const newPrice =
 prompt("Enter New Product Price",price);
 
 if(!newPrice) return;
+const newStock =
+prompt("Enter Product Stock",stock);
+
+if(newStock === null) return;
 
 await updateDoc(doc(db,"products",id),{
 name:newName,
-price:Number(newPrice)
+price:Number(newPrice),
+stock:Number(newStock)
 });
 
 alert("Product Updated");

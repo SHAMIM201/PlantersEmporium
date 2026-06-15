@@ -50,12 +50,15 @@ margin-bottom:20px;
 }
 
 .order-btn{
-display:inline-block;
+display:inline-flex;
+justify-content:center;
+align-items:center;
+width:200px;
+height:60px;
 background:#25D366;
 color:white;
-padding:15px 30px;
 text-decoration:none;
-border-radius:10px;
+border-radius:12px;
 font-size:18px;
 font-weight:bold;
 }
@@ -100,16 +103,54 @@ Loading...
 id="productPrice"
 class="price">
 </h2>
+<div class="stock-badge">
+🟢 In Stock
+</div>
 
 <p id="productDescription">
 Premium Quality Planter
 </p>
+<div class="product-features">
+
+<div>✅ Premium Quality</div>
+
+<div>🌱 Indoor & Outdoor Use</div>
+
+<div>🚚 Fast Delivery</div>
+
+<div>💪 Durable Material</div>
+
+</div>
+
+<div id="productCartArea">
+
+<button
+id="addToCartBtn"
+class="order-btn"
+style="
+background:#2e7d32;
+border:none;
+cursor:pointer;
+margin-right:10px;">
+
+Add To Cart
+
+</button>
+
+</div>
 
 <a
 id="whatsappBtn"
 class="order-btn"
-target="_blank">
-Order On WhatsApp
+target="_blank"
+style="
+width:200px;
+display:inline-flex;
+justify-content:center;
+align-items:center;">
+
+Buy Now
+
 </a>
 
 </div>
@@ -214,6 +255,123 @@ const schema = {
 "availability":"https://schema.org/InStock"
 }
 };
+function renderProductCart(){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const existing =
+cart.find(item=>item.name===product.name);
+
+const area =
+document.getElementById("productCartArea");
+
+if(existing){
+
+area.innerHTML = `
+
+<div style="
+display:flex;
+align-items:center;
+gap:15px;
+background:white;
+border:2px solid #2e7d32;
+padding:10px 15px;
+border-radius:12px;
+width:max-content;
+">
+
+<button id="minusBtn">−</button>
+
+<span style="
+font-size:20px;
+font-weight:bold;">
+${existing.quantity}
+</span>
+
+<button id="plusBtn">+</button>
+
+</div>
+
+`;
+
+document.getElementById("plusBtn").onclick=()=>{
+
+existing.quantity++;
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+renderProductCart();
+
+};
+
+document.getElementById("minusBtn").onclick=()=>{
+
+existing.quantity--;
+
+if(existing.quantity<=0){
+
+cart =
+cart.filter(
+item=>item.name!==product.name
+);
+
+}
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+renderProductCart();
+
+};
+
+}else{
+
+area.innerHTML = `
+
+<button
+id="addToCartBtn"
+class="order-btn"
+style="
+background:#2e7d32;
+border:none;
+cursor:pointer;
+margin-right:10px;">
+
+Add To Cart
+
+</button>
+
+`;
+
+document.getElementById("addToCartBtn").onclick=()=>{
+
+cart.push({
+name:product.name,
+price:product.price,
+image:product.image,
+quantity:1
+});
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+renderProductCart();
+
+};
+
+}
+
+}
+
+renderProductCart();
 
 const schemaScript = document.createElement("script");
 schemaScript.type = "application/ld+json";

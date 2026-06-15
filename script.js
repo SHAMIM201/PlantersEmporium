@@ -42,16 +42,26 @@ const prices = {
 // CART INITIALIZATION & UPDATES
 // ==========================================
 function updateCartCounter() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const totalCount = cart.reduce((sum, item) => {
-  return sum + (item?.quantity || 0);
-}, 0);
-  localStorage.setItem("cartCount", totalCount);
-  
-  const cartCounter = document.getElementById("cart-count");
-  if (cartCounter) {
-    cartCounter.innerText = totalCount;
-  }
+
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const totalCount =
+cart.reduce((sum,item)=>{
+return sum + (item?.quantity || 0);
+},0);
+
+localStorage.setItem("cartCount",totalCount);
+
+const cartCounter =
+document.getElementById("cart-count");
+
+if(cartCounter){
+cartCounter.innerText = totalCount;
+}
+
+updateFloatingCart();
+
 }
 
 // Global function to update items quantity inside localStorage cart
@@ -73,7 +83,14 @@ window.changeQuantity = function(name, price, image, action) {
       }
     }
   }
-
+localStorage.setItem(
+"lastAddedImage",
+image
+);
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCounter();
   
@@ -237,7 +254,7 @@ data-image="${product.image}">
 <div class="cart-control">
 
 <button class="add-btn">
-Add +
+Add Now
 </button>
 
 <div class="qty-box" style="display:none;">
@@ -296,7 +313,7 @@ data-image="${product.image}">
 <div class="cart-control">
 
     <button class="add-btn">
-        Add +
+        Add Now
     </button>
 
     <div class="qty-box" style="display:none;">
@@ -356,7 +373,15 @@ item => item.name === card.dataset.name
 );
 
 if(existing){
+
     existing.quantity += 1;
+
+    cart = cart.filter(
+        item => item.name !== card.dataset.name
+    );
+
+    cart.push(existing);
+
 }else{
     cart.push({
         name: card.dataset.name,
@@ -365,7 +390,10 @@ if(existing){
         quantity: 1
     });
 }
-
+localStorage.setItem(
+"lastAddedImage",
+card.dataset.image
+);
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)
@@ -374,12 +402,14 @@ JSON.stringify(cart)
 let cartCount =
 parseInt(localStorage.getItem("cartCount")) || 0;
 
+
 cartCount++;
 
 localStorage.setItem("cartCount", cartCount);
 
 document.getElementById("cart-count").innerText =
 cartCount;
+updateCartCounter();
 
 });
 
@@ -404,7 +434,15 @@ item => item.name === name
 );
 
 if(existing){
+
     existing.quantity += 1;
+
+    cart = cart.filter(
+        item => item.name !== card.dataset.name
+    );
+
+    cart.push(existing);
+
 }else{
     cart.push({
         name,
@@ -413,7 +451,10 @@ if(existing){
         quantity: 1
     });
 }
-
+localStorage.setItem(
+"lastAddedImage",
+image
+);
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)
@@ -708,7 +749,7 @@ alt="${product.name}">
 <div class="cart-control">
 
 <button class="add-btn">
-Add +
+Add Now 
 </button>
 
 <div class="qty-box" style="display:none;">
@@ -833,3 +874,99 @@ function rotateReviews() {
 
 }
 
+function updateFloatingCart(){
+
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const bar =
+document.getElementById("floating-cart");
+
+if(!bar) return;
+
+if(cart.length === 0){
+
+bar.style.display = "none";
+return;
+
+}
+
+bar.style.display = "flex";
+
+let totalItems = cart.reduce(
+(sum,item)=>sum + (item.quantity || 1),
+0
+);
+
+document.getElementById(
+"floating-cart-count"
+).innerText =
+totalItems + " Items Selected";
+
+const recentImages =
+cart
+.map(item => item.image)
+.slice(-3)
+.reverse();
+
+document.getElementById("img1").style.display =
+recentImages[0] ? "block" : "none";
+
+document.getElementById("img2").style.display =
+recentImages[1] ? "block" : "none";
+
+document.getElementById("img3").style.display =
+recentImages[2] ? "block" : "none";
+
+document.getElementById("img1").src =
+recentImages[0] || "";
+
+document.getElementById("img2").src =
+recentImages[1] || "";
+
+document.getElementById("img3").src =
+recentImages[2] || "";
+
+
+document.getElementById("img1").style.display =
+recentImages[0] ? "block" : "none";
+
+document.getElementById("img2").style.display =
+recentImages[1] ? "block" : "none";
+
+document.getElementById("img3").style.display =
+recentImages[2] ? "block" : "none";
+
+document.getElementById("img1").src =
+recentImages[0] || "";
+
+document.getElementById("img2").src =
+recentImages[1] || "";
+
+document.getElementById("img3").src =
+recentImages[2] || "";
+
+
+}
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+updateFloatingCart();
+
+const bar =
+document.getElementById(
+"floating-cart"
+);
+
+if(bar){
+
+bar.onclick = ()=>{
+window.location.href =
+"cart.html";
+};
+
+}
+
+});

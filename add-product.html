@@ -30,6 +30,22 @@ font-size:16px;
 button:hover{
 background:#218838;
 }
+.check-row{
+display:flex;
+align-items:center;
+gap:10px;
+margin:15px 0;
+}
+
+.check-row input{
+width:auto;
+margin:0;
+}
+
+.check-row label{
+margin:0;
+font-size:16px;
+}
 </style>
 
 </head>
@@ -40,6 +56,12 @@ background:#218838;
 <input type="text" id="name" placeholder="Product Name">
 
 <input type="number" id="price" placeholder="Price">
+
+
+<input
+type="number"
+id="stock"
+placeholder="Stock Quantity">
 
 <select id="category">
 
@@ -65,18 +87,15 @@ Hanging Planters
 
 <input type="file" id="image">
 
-<label>
+<div class="check-row">
 <input type="checkbox" id="featured">
-Featured Product
-</label>
+<label for="featured">Featured Product</label>
+</div>
 
-<br><br>
-
-<label>
+<div class="check-row">
 <input type="checkbox" id="bestseller">
-Best Seller
-</label>
-
+<label for="bestseller">Best Seller</label>
+</div>
 <br><br>
 
 <button onclick="saveProduct()">
@@ -166,7 +185,10 @@ price:
 Number(
 document.getElementById("price").value
 ),
-
+stock:
+Number(
+document.getElementById("stock").value
+),
 image:
 data.secure_url,
 
@@ -188,6 +210,7 @@ alert("Product Added Successfully");
 
 document.getElementById("name").value="";
 document.getElementById("price").value="";
+document.getElementById("stock").value="";
 document.getElementById("image").value="";
 document.getElementById("featured").checked=false;
 document.getElementById("bestseller").checked=false;
