@@ -149,7 +149,7 @@ Remove
 
 });
 
-function removeItem(index){
+window.removeItem = function(index){
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
@@ -170,35 +170,37 @@ window.changeQty = async function(index,value){
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
-const item = cart[index];
+if(value === 1){
+
+const productId = cart[index].id;
 
 const productRef =
-doc(db,"products",item.id);
+doc(db,"products",productId);
 
 const productSnap =
 await getDoc(productRef);
 
-if(!productSnap.exists()) return;
+if(productSnap.exists()){
 
 const stock =
 productSnap.data().stock || 0;
 
-const newQty =
-(item.quantity || 1) + value;
+if(cart[index].quantity >= stock){
 
-if(newQty > stock){
-
-alert(
-`Only ${stock} items available`
-);
+alert(`Only ${stock} items available`);
 
 return;
 
 }
 
-item.quantity = newQty;
+}
 
-if(item.quantity <= 0){
+}
+
+cart[index].quantity =
+(cart[index].quantity || 1) + value;
+
+if(cart[index].quantity <= 0){
 
 cart.splice(index,1);
 
@@ -211,8 +213,8 @@ JSON.stringify(cart)
 
 location.reload();
 
-};
-function clearCart(){
+}
+window.clearCart = function(){
 
 localStorage.removeItem("cart");
 

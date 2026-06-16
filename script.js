@@ -235,6 +235,7 @@ await getDocs(collection(db, "products"));
 snapshot.forEach((doc) => {
 
 const product = doc.data();
+const stock = product.stock || 0;
 allProducts.push({
     name: product.name,
     price: product.price,
@@ -259,6 +260,7 @@ data-image="${product.image}">
 </p>
 
 <div class="cart-control">
+
 ${stock > 0 ? `
 <button class="add-btn">
 Add Now
@@ -281,6 +283,8 @@ Out Of Stock
 </div>
 
 </div>
+
+
 
 </div>
 `;
@@ -330,15 +334,28 @@ data-image="${product.image}">
 
 <div class="cart-control">
 
-    <button class="add-btn">
-        Add Now
-    </button>
+${stock > 0 ? `
+<button class="add-btn">
+Add Now
+</button>
+` : `
+<button
+style="
+background:#ccc;
+color:#666;
+cursor:not-allowed;
+">
+Out Of Stock
+</button>
+`}
 
-    <div class="qty-box" style="display:none;">
-        <button class="qty-btn minus">−</button>
-        <span class="qty-number">1</span>
-        <button class="qty-btn plus">+</button>
-    </div>
+<div class="qty-box" style="display:none;">
+<button class="qty-btn minus">−</button>
+<span class="qty-number">0</span>
+<button class="qty-btn plus">+</button>
+</div>
+
+</div>
 
 </div>
 
@@ -352,8 +369,8 @@ data-image="${product.image}">
     console.error("Firebase Error:", error);
   }
 }
+async function setupQuantityButtons() {
 
-function setupQuantityButtons() {
 
 document.querySelectorAll(".cart-control").forEach(control => {
 
@@ -362,6 +379,7 @@ if(control.dataset.loaded) return;
 control.dataset.loaded = "true";
 
 const addBtn = control.querySelector(".add-btn");
+if (!addBtn) return;
 const buyNow =
 control.querySelector(".buy-now-btn");
 const qtyBox = control.querySelector(".qty-box");
@@ -372,17 +390,36 @@ const qty = control.querySelector(".qty-number");
 
 let count = 0;
 
-addBtn.addEventListener("click", () => {
+
+
+addBtn.addEventListener("click", async () => {
+  const card =
+control.closest(".product-card") ||
+control.closest(".slide-card");
+  const productRef =
+doc(db,"products",card.dataset.id);
+
+const productSnap =
+await getDoc(productRef);
+
+if(!productSnap.exists()) return;
+
+const stock =
+productSnap.data().stock || 0;
+
+if(stock <= 0){
+
+alert("Out Of Stock");
+
+return;
+
+}
 
 count = 1;
 
-addBtn.style.display = "none";
-qtyBox.style.display = "flex";
 
-qty.innerText = count;
-const card =
-control.closest(".product-card") ||
-control.closest(".slide-card");
+
+
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -413,6 +450,12 @@ localStorage.setItem(
 "lastAddedImage",
 card.dataset.image
 );
+count = existing ? existing.quantity : 1;
+
+qty.innerText = count;
+
+addBtn.style.display = "none";
+qtyBox.style.display = "flex";
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)
@@ -453,6 +496,7 @@ productSnap.data().stock || 0;
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
+
 
 const existing =
 cart.find(item => item.name === card.dataset.name);
@@ -498,68 +542,47 @@ updateCartCounter();
 
 minus.addEventListener("click", () => {
 
-if(count > 0){
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+const card =
+control.closest(".product-card") ||
+control.closest(".slide-card");
+const existing =
+cart.find(item => item.name === card.dataset.name);
 
-count--;
+if(existing){
 
-if(count === 0){
+existing.quantity--;
+
+if(existing.quantity <= 0){
+
+cart = cart.filter(
+item => item.name !== card.dataset.name
+);
 
 qtyBox.style.display = "none";
 addBtn.style.display = "inline-block";
 
-}
+}else{
 
+count = existing.quantity;
 qty.innerText = count;
 
-let cartCount =
-parseInt(localStorage.getItem("cartCount")) || 0;
-
-if(cartCount > 0){
-
-cartCount--;
-
-localStorage.setItem("cartCount", cartCount);
-
-document.getElementById("cart-count").innerText =
-cartCount;
-
 }
-
-}
-if(buyNow){
-
-buyNow.addEventListener("click",()=>{
-
-const card =
-control.closest(".product-card") ||
-control.closest(".slide-card");
-
-let cart = [];
-
-cart.push({
-name: card.dataset.name,
-price: parseInt(card.dataset.price),
-image: card.dataset.image,
-quantity: 1
-});
 
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)
 );
 
-window.location.href =
-"checkout.html";
-
-});
+updateCartCounter();
 
 }
 
 });
-
 });
-
 }
+
 
 
 // Script Execute Functions
@@ -758,6 +781,7 @@ snapshot.forEach((doc)=>{
 const product =
 doc.data();
 
+const stock = product.stock || 0;
 if(product.category !== category)
 return;
 
@@ -777,12 +801,22 @@ alt="${product.name}">
 <p class="price">
 ₹${product.price}
 </p>
-
 <div class="cart-control">
 
+${stock > 0 ? `
 <button class="add-btn">
-Add Now 
+Add Now
 </button>
+` : `
+<button
+style="
+background:#ccc;
+color:#666;
+cursor:not-allowed;
+">
+Out Of Stock
+</button>
+`}
 
 <div class="qty-box" style="display:none;">
 <button class="qty-btn minus">−</button>
