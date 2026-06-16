@@ -1154,17 +1154,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // search box me daalo
                 const searchInput =
-                    document.getElementById("search-input");
+                         document.getElementById("searchInput");
+                         if (searchInput) {
+                                searchInput.value = keywords;
+
+                                searchInput.dispatchEvent(
+                             new Event("input", { bubbles: true })
+                                     );
+                                    }
 
                 if (searchInput) {
                     searchInput.value = keywords;
                 }
 
                 // agar filterProducts function hai
-                if (typeof filterProducts === "function") {
-                    filterProducts(keywords);
-                }
-
+               
                 console.log("Final Keywords:", keywords);
 
             } catch (error) {
