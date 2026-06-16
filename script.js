@@ -1141,13 +1141,11 @@ image: base64
 
 const data =
 await response.json();
+console.log("FULL AI DATA:", data);
 
 console.log(data);
 
-alert(
-"AI Keywords: " +
-(data.keywords || "No Result")
-);
+alert(JSON.stringify(data));
 
 }catch(error){
 
