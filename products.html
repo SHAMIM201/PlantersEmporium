@@ -170,6 +170,15 @@ document.getElementById("sortFilter");
 
 let allProducts = [];
 async function loadProducts(){
+    allProducts.push({
+  id: doc.id,
+  ...product,
+  keywords: (
+    product.name +
+    " " +
+    (product.category || "")
+  ).toLowerCase()
+});
 
 const querySnapshot =
 await getDocs(collection(db,"products"));
@@ -293,6 +302,53 @@ renderProducts
 loadProducts().then(() => {
 renderProducts();
 });
+function searchByKeywords(keywords){
+
+const words = keywords
+.toLowerCase()
+.split(",")
+.map(k => k.trim());
+
+const filteredProducts =
+allProducts.filter(product => {
+
+const text =
+(
+product.name + " " +
+(product.category || "")
+).toLowerCase();
+
+return words.some(word =>
+text.includes(word)
+);
+
+});
+
+productsDiv.innerHTML = "";
+
+filteredProducts.forEach(product => {
+
+productsDiv.innerHTML += `
+
+<div class="card"
+style="cursor:pointer"
+onclick="location.href='product.html?id=${product.id}'">
+
+<img src="${product.image}">
+
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+</div>
+
+`;
+
+});
+
+}
 
 </script>
 

@@ -129,6 +129,10 @@ function performSearch() {
 
 const filterValue =
 searchInput.value.toLowerCase().trim();
+const keywords =
+filterValue.split(",")
+.map(k => k.trim())
+.filter(k => k);
 
 const cards =
 document.querySelectorAll(
@@ -143,10 +147,19 @@ const productName =
 card.querySelector("h3")
 ?.innerText.toLowerCase() || "";
 
-if (
-filterValue === "" ||
-productName.includes(filterValue)
-) {
+if (filterValue === "") {
+
+card.style.display = "";
+visibleCount++;
+
+} else {
+
+const matched =
+keywords.some(keyword =>
+productName.includes(keyword)
+);
+
+if (matched) {
 
 card.style.display = "";
 visibleCount++;
@@ -154,6 +167,8 @@ visibleCount++;
 } else {
 
 card.style.display = "none";
+
+}
 
 }
 
@@ -1145,6 +1160,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // AI keywords
                 let keywords = data.keywords || "";
+                const keywordMap = {
+  "garden": "Garden Pot",
+  "planter": "Designer Pot",
+  "pot": "Plastic Pot",
+  "watering": "Watering Can",
+  "water": "Watering Can",
+  "basket": "Basket",
+  "tank": "Water Tank"
+};
+
+for (const key in keywordMap) {
+  if (keywords.toLowerCase().includes(key)) {
+    keywords = keywordMap[key];
+    break;
+  }
+}
 
                 // extra text clean kar do
                 keywords = keywords
