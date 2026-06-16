@@ -52,27 +52,163 @@ let found = false;
 snapshot.forEach(doc=>{
 
 const order = doc.data();
+const history = order.trackingHistory || [];
 
 if(order.orderNumber === orderId){
 
 found = true;
-let step = 1;
 
-if(order.status === "Packed"){
-step = 2;
+let historyHtml = "";
+
+let allSteps = [];
+
+
+
+if(order.status === "Cancelled"){
+
+history.forEach(item=>{
+allSteps.push(item.status);
+});
+
+}
+else{
+
+allSteps = [
+"Order Confirmed",
+"Packed",
+"Shipped",
+"Out For Delivery",
+"Delivered"
+];
+
 }
 
-else if(order.status === "Shipped"){
-step = 3;
+allSteps.forEach((stepName,index)=>{
+
+const stepData =
+history.find(x => x.status === stepName);
+
+let completed = !!stepData;
+
+if(
+order.status === "Cancelled" &&
+stepName === "Cancelled"
+){
+completed = true;
 }
 
-else if(order.status === "Out For Delivery"){
-step = 4;
-}
+historyHtml += `
 
-else if(order.status === "Delivered"){
-step = 5;
+<div style="
+display:flex;
+align-items:flex-start;
+">
+
+<div style="
+width:50px;
+display:flex;
+flex-direction:column;
+align-items:center;
+">
+
+<div style="
+width:32px;
+height:32px;
+border-radius:50%;
+background:${
+stepName==="Cancelled" && completed
+? '#dc3545'
+: completed
+? '#16a34a'
+: '#fff'
+};
+
+border:3px solid ${
+stepName==="Cancelled" && completed
+? '#dc3545'
+: completed
+? '#16a34a'
+: '#999'
+};
+color:white;
+font-size:18px;
+font-weight:bold;
+display:flex;
+justify-content:center;
+align-items:center;
+">
+${completed ? '✓' : ''}
+</div>
+
+${index < allSteps.length-1 ? `
+<div style="
+width:3px;
+height:65px;
+background:${completed ? '#16a34a' : '#ccc'};
+"></div>
+` : ''}
+
+</div>
+
+<div style="
+padding-left:15px;
+padding-bottom:25px;
+">
+
+<div style="
+font-size:22px;
+font-weight:bold;
+color:${
+stepName==="Cancelled" && completed
+? '#dc3545'
+: completed
+? '#16a34a'
+: '#111'
+};
+">
+${stepName}
+</div>
+
+<div style="
+margin-top:5px;
+color:#666;
+font-size:14px;
+">
+${completed ? stepData.time : 'Not yet updated'}
+</div>
+
+<div style="
+margin-top:8px;
+font-size:15px;
+color:#444;
+">
+${
+stepName==="Order Confirmed"
+? "Your order has been confirmed."
+:
+stepName==="Packed"
+? "Your order has been packed."
+:
+stepName==="Shipped"
+? "Your order is on the way."
+:
+stepName==="Out For Delivery"
+? "Your order is out for delivery."
+:
+stepName==="Cancelled"
+? "This order has been cancelled."
+:
+"Your order has been delivered."
 }
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
 
 result.innerHTML = `
 
@@ -104,96 +240,30 @@ ${order.phone}
 <b>Status:</b>
 ${order.status}
 </p>
+<h3 style="margin-top:25px;">
+Tracking Updates
+</h3>
 
-<p style="
-margin-top:15px;
-font-size:16px;
-line-height:30px;
+${historyHtml}
+<div style="
+margin-top:20px;
+padding:15px;
+background:#eef8ee;
+border:1px solid #b7dfb7;
+border-radius:8px;
+text-align:center;
 color:#0b7a29;
 font-weight:bold;
 ">
-<div style="
-display:flex;
-justify-content:center;
-align-items:flex-start;
-gap:25px;
-margin-top:25px;
-font-weight:bold;
-flex-wrap:wrap;
-">
 
-<div style="text-align:center;">
-<div style="
-width:40px;
-height:40px;
-border-radius:50%;
-background:${step>=1?'#28a745':'#ccc'};
-margin:auto;
-"></div>
-<div style="margin-top:8px;">
-Order Received
-</div>
-</div>
+Last Updated:
+${history.length ? history[history.length-1].time : 'N/A'}
 
-<div style="text-align:center;">
-<div style="
-width:40px;
-height:40px;
-border-radius:50%;
-background:${step>=2?'#28a745':'#ccc'};
-margin:auto;
-"></div>
-<div style="margin-top:8px;">
-Packed
-</div>
-</div>
-
-<div style="text-align:center;">
-<div style="
-width:40px;
-height:40px;
-border-radius:50%;
-background:${step>=3?'#28a745':'#ccc'};
-margin:auto;
-"></div>
-<div style="margin-top:8px;">
-Shipped
-</div>
-</div>
-
-<div style="text-align:center;">
-<div style="
-width:40px;
-height:40px;
-border-radius:50%;
-background:${step>=4?'#28a745':'#ccc'};
-margin:auto;
-"></div>
-<div style="margin-top:8px;">
-Out For Delivery
-</div>
-</div>
-
-<div style="text-align:center;">
-<div style="
-width:40px;
-height:40px;
-border-radius:50%;
-background:${step>=5?'#28a745':'#ccc'};
-margin:auto;
-"></div>
-<div style="margin-top:8px;">
-Delivered
-</div>
 </div>
 
 </div>
 
 
-</div>
-</p>
-
-</div>
 `;
 }
 
