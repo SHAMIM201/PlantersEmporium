@@ -107,16 +107,124 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+console.log("Firebase Connected");
 window.showItems = async function(id){
 
-    alert("View Items Clicked: " + id);
+try{
+
+const orderRef = doc(db,"orders",id);
+const orderSnap = await getDoc(orderRef);
+
+if(!orderSnap.exists()){
+alert("Order not found");
+return;
+}
+
+const order = orderSnap.data();
+
+let text = "ORDER ITEMS\n\n";
+
+if(order.cart){
+
+order.cart.forEach(item=>{
+
+text +=
+item.name +
+"\nQty: " + item.quantity +
+"\nPrice: ₹" + item.price +
+"\n\n";
+
+});
+
+}
+
+alert(text);
+
+}catch(error){
+
+console.error(error);
+alert("Failed to load items");
+
+}
 
 };
 
 window.printInvoice = async function(id){
 
-    alert("Print Invoice Clicked: " + id);
+try{
+
+const orderRef = doc(db,"orders",id);
+const orderSnap = await getDoc(orderRef);
+
+if(!orderSnap.exists()){
+alert("Order not found");
+return;
+}
+
+const order = orderSnap.data();
+
+let itemsHtml = "";
+
+if(order.cart){
+
+order.cart.forEach(item=>{
+
+itemsHtml += `
+<tr>
+<td>${item.name}</td>
+<td>${item.quantity}</td>
+<td>₹${item.price}</td>
+<td>₹${item.price * item.quantity}</td>
+</tr>
+`;
+
+});
+
+}
+
+const win = window.open("","_blank");
+
+win.document.write(`
+<html>
+<head>
+<title>Invoice</title>
+</head>
+<body>
+
+<h2>Planters Emporium Invoice</h2>
+
+<p><b>Name:</b> ${order.name}</p>
+<p><b>Phone:</b> ${order.phone}</p>
+<p><b>Address:</b> ${order.address}</p>
+
+<table border="1" cellpadding="8">
+<tr>
+<th>Product</th>
+<th>Qty</th>
+<th>Price</th>
+<th>Total</th>
+</tr>
+
+${itemsHtml}
+
+</table>
+
+</body>
+</html>
+`);
+
+win.document.close();
+
+setTimeout(()=>{
+win.print();
+},500);
+
+}catch(error){
+
+console.error(error);
+alert("Invoice print failed");
+
+}
 
 };
 window.updateStatus = async function(id,status){
@@ -188,11 +296,11 @@ loadOrders();
 await updateDoc(orderRef,{
 status:status
 });
+
 alert(
 "Old Status: " + oldStatus +
 "\nNew Status: " + status
 );
-
 
 loadOrders();
 
@@ -229,125 +337,94 @@ alert("Delete failed");
 };
 
 async function loadOrders(){
+    console.log("loadOrders running");
 
-    const ordersDiv =
-    document.getElementById("orders");
+const ordersDiv = document.getElementById("orders");
 
-    ordersDiv.innerHTML = "Loading Orders...";
+ordersDiv.innerHTML = "Loading Orders...";
 
-    try{
+try{
 
-        const snapshot =
-        await getDocs(collection(db,"orders"));
+const snapshot = 
+await getDocs(collection(db,"orders"));
+console.log("Orders Found:", snapshot.size);
 
-        const search =
-        document.getElementById("searchPhone")
-        .value
-        .toLowerCase();
+const search =
+document.getElementById("searchPhone")
+.value
+.toLowerCase();
 
-        document.getElementById("totalOrders")
-        .innerText = snapshot.size;
+document.getElementById("totalOrders").innerText =
+snapshot.size;
 
-        ordersDiv.innerHTML = "";
+ordersDiv.innerHTML = "";
 
-        snapshot.forEach((docSnap)=>{
+snapshot.forEach((docSnap)=>{
 
-            const order = docSnap.data();
+const order = docSnap.data();
 
-            if(
-                search &&
-                !(
-                    String(order.phone || "")
-                    .includes(search)
-                    ||
-                    String(order.name || "")
-                    .toLowerCase()
-                    .includes(search)
-                )
-            ){
-                return;
-            }
+if(
+search &&
+!(
+String(order.phone || "").includes(search) ||
+String(order.name || "").toLowerCase().includes(search)
+)
+){
+return;
+}
 
-            ordersDiv.innerHTML += `
-            <div class="order">
+ordersDiv.innerHTML += `
+<div class="order">
 
-                <h3>${order.name || "No Name"}</h3>
+<h3>${order.name || "No Name"}</h3>
 
-                <p><b>Phone:</b> ${order.phone || ""}</p>
+<p><b>Phone:</b> ${order.phone || ""}</p>
+<p><b>Address:</b> ${order.address || ""}</p>
+<p><b>City:</b> ${order.city || ""}</p>
+<p><b>Pincode:</b> ${order.pincode || ""}</p>
+<p><b>Status:</b> ${order.status || "Pending"}</p>
 
-                <p><b>Address:</b> ${order.address || ""}</p>
+<select onchange="updateStatus('${docSnap.id}',this.value)">
+<option value="Pending" ${(order.status==="Pending")?"selected":""}>Pending</option>
+<option value="Confirmed" ${(order.status==="Confirmed")?"selected":""}>Confirmed</option>
+<option value="Shipped" ${(order.status==="Shipped")?"selected":""}>Shipped</option>
+<option value="Delivered" ${(order.status==="Delivered")?"selected":""}>Delivered</option>
+<option value="Cancelled" ${(order.status==="Cancelled")?"selected":""}>Cancelled</option>
+</select>
 
-                <p><b>City:</b> ${order.city || ""}</p>
+<br><br>
 
-                <p><b>Pincode:</b> ${order.pincode || ""}</p>
-
-                <p><b>Status:</b> ${order.status || "Pending"}</p>
-
-                <select onchange="updateStatus('${docSnap.id}',this.value)">
-
-                    <option value="Pending"
-                    ${(order.status==="Pending")?"selected":""}>
-                    Pending
-                    </option>
-
-                    <option value="Confirmed"
-                    ${(order.status==="Confirmed")?"selected":""}>
-                    Confirmed
-                    </option>
-
-                    <option value="Shipped"
-                    ${(order.status==="Shipped")?"selected":""}>
-                    Shipped
-                    </option>
-
-                    <option value="Delivered"
-                    ${(order.status==="Delivered")?"selected":""}>
-                    Delivered
-                    </option>
-                    <option value="Cancelled"
-                    ${(order.status==="Cancelled")?"selected":""}>
-                      Cancelled
-                    </option>
-
-                </select>
-
-                <br>
-<button
-class="view-btn"
-onclick="showItems('${docSnap.id}')">
+<button class="view-btn" onclick="showItems('${docSnap.id}')">
 View Items
 </button>
 
-<button
-class="print-btn"
-onclick="printInvoice('${docSnap.id}')">
+<button class="print-btn" onclick="printInvoice('${docSnap.id}')">
 Print Invoice
 </button>
-                <button
-                class="delete-btn"
-                onclick="deleteOrder('${docSnap.id}')">
-                Delete Order
-                </button>
 
-            </div>
-            `;
-        });
+<button class="delete-btn" onclick="deleteOrder('${docSnap.id}')">
+Delete Order
+</button>
 
-    }catch(error){
+</div>
+`;
 
-        console.error(error);
+});
 
-        ordersDiv.innerHTML =
-        "<h3 style='color:red'>Failed to load orders. Check Firestore permissions.</h3>";
-    }
+
+}catch(error){
+
+console.error(error);
+alert("Status update failed");
+
 }
 
+};
 loadOrders();
 
 document
 .getElementById("searchPhone")
 .addEventListener("input",loadOrders);
-
 </script>
 
 </body>
