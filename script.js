@@ -1099,3 +1099,25 @@ window.location.href =
 }
 
 });
+// IMAGE SEARCH BUTTON
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+const imageSearch =
+document.getElementById("imageSearch");
+
+if(!imageSearch) return;
+
+imageSearch.addEventListener("change",(e)=>{
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+alert(
+"Image Selected: " + file.name
+);
+
+});
+
+});

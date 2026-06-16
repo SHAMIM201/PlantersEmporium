@@ -2090,3 +2090,28 @@ margin-bottom:20px;
     flex-wrap:wrap;
     margin-top:20px;
 }
+/* IMAGE SEARCH ICON */
+
+.image-search-icon{
+    margin-left:12px;
+    color:#5f6368;
+    font-size:22px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.image-search-icon:hover{
+    color:#0b5d1e;
+    transform:scale(1.1);
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.image-search-icon{
+    font-size:20px;
+    margin-left:8px;
+}
+
+}
