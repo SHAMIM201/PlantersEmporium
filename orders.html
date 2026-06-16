@@ -91,7 +91,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    getDoc
+    getDoc,
+    arrayUnion
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -283,18 +284,13 @@ stock:
 }
 
 await updateDoc(orderRef,{
-status:status
-});
+status: status,
 
-alert(
-"Old Status: " + oldStatus +
-"\nNew Status: " + status
-);
+trackingHistory: arrayUnion({
+status: status,
+time: new Date().toLocaleString()
+})
 
-loadOrders();
-
-await updateDoc(orderRef,{
-status:status
 });
 
 alert(
