@@ -236,6 +236,14 @@ snapshot.forEach((doc) => {
 
 const product = doc.data();
 const stock = product.stock || 0;
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartItem =
+cart.find(item => item.name === product.name);
+
+const currentQty =
+cartItem ? cartItem.quantity : 0;
 allProducts.push({
     name: product.name,
     price: product.price,
@@ -262,7 +270,8 @@ data-image="${product.image}">
 <div class="cart-control">
 
 ${stock > 0 ? `
-<button class="add-btn">
+<button class="add-btn"
+style="${currentQty > 0 ? 'display:none' : ''}">
 Add Now
 </button>
 ` : `
@@ -276,10 +285,17 @@ Out Of Stock
 </button>
 `}
 
-<div class="qty-box" style="display:none;">
+<div class="qty-box"
+style="${currentQty > 0 ? 'display:flex' : 'display:none'}">
+
 <button class="qty-btn minus">−</button>
-<span class="qty-number">0</span>
+
+<span class="qty-number">
+${currentQty}
+</span>
+
 <button class="qty-btn plus">+</button>
+
 </div>
 
 </div>
@@ -335,7 +351,8 @@ data-image="${product.image}">
 <div class="cart-control">
 
 ${stock > 0 ? `
-<button class="add-btn">
+<button class="add-btn"
+style="${currentQty > 0 ? 'display:none' : ''}">
 Add Now
 </button>
 ` : `
@@ -389,7 +406,26 @@ const plus = control.querySelector(".plus");
 const qty = control.querySelector(".qty-number");
 
 let count = 0;
+const card =
+control.closest(".product-card") ||
+control.closest(".slide-card");
 
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const existing =
+cart.find(item => item.name === card.dataset.name);
+
+count =
+existing ? existing.quantity : 0;
+
+if(count > 0){
+
+addBtn.style.display = "none";
+qtyBox.style.display = "flex";
+qty.innerText = count;
+
+}
 
 
 addBtn.addEventListener("click", async () => {
@@ -690,6 +726,25 @@ if(cards.length === 0) return;
 cards.forEach(card => {
 
 const clone = card.cloneNode(true);
+const addBtn = clone.querySelector(".add-btn");
+const qtyBox = clone.querySelector(".qty-box");
+const qtyNum = clone.querySelector(".qty-number");
+
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const existing =
+cart.find(item => item.name === clone.dataset.name);
+
+if(existing){
+
+if(addBtn) addBtn.style.display = "none";
+
+if(qtyBox) qtyBox.style.display = "flex";
+
+if(qtyNum) qtyNum.innerText = existing.quantity;
+
+}
 
 const cartControl =
 clone.querySelector(".cart-control");
@@ -782,6 +837,14 @@ const product =
 doc.data();
 
 const stock = product.stock || 0;
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartItem =
+cart.find(item => item.name === product.name);
+
+const currentQty =
+cartItem ? cartItem.quantity : 0;
 if(product.category !== category)
 return;
 

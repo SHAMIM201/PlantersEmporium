@@ -385,11 +385,40 @@ ordersDiv.innerHTML += `
 <p><b>Status:</b> ${order.status || "Pending"}</p>
 
 <select onchange="updateStatus('${docSnap.id}',this.value)">
-<option value="Pending" ${(order.status==="Pending")?"selected":""}>Pending</option>
-<option value="Confirmed" ${(order.status==="Confirmed")?"selected":""}>Confirmed</option>
-<option value="Shipped" ${(order.status==="Shipped")?"selected":""}>Shipped</option>
-<option value="Delivered" ${(order.status==="Delivered")?"selected":""}>Delivered</option>
-<option value="Cancelled" ${(order.status==="Cancelled")?"selected":""}>Cancelled</option>
+<option value="Payment Verification Pending"
+${(order.status==="Payment Verification Pending")?"selected":""}>
+Payment Verification Pending
+</option>
+
+<option value="Order Confirmed"
+${(order.status==="Order Confirmed")?"selected":""}>
+Order Confirmed
+</option>
+
+<option value="Packed"
+${(order.status==="Packed")?"selected":""}>
+Packed
+</option>
+
+<option value="Shipped"
+${(order.status==="Shipped")?"selected":""}>
+Shipped
+</option>
+
+<option value="Out For Delivery"
+${(order.status==="Out For Delivery")?"selected":""}>
+Out For Delivery
+</option>
+
+<option value="Delivered"
+${(order.status==="Delivered")?"selected":""}>
+Delivered
+</option>
+
+<option value="Cancelled"
+${(order.status==="Cancelled")?"selected":""}>
+Cancelled
+</option>
 </select>
 
 <br><br>
