@@ -182,6 +182,8 @@ status:"Pending",
 createdAt:new Date()
 
 };
+
+
 for(const item of order.cart){
 
 const productRef =
@@ -190,7 +192,43 @@ doc(db,"products",item.id);
 const productSnap =
 await getDoc(productRef);
 
-if(productSnap.exists()){
+if(!productSnap.exists()){
+
+alert(
+`${item.name} not found`
+);
+
+return;
+
+}
+
+const product =
+productSnap.data();
+
+const currentStock =
+product.stock || 0;
+
+const orderedQty =
+item.quantity || 1;
+
+if(orderedQty > currentStock){
+
+alert(
+`${item.name}\n\nOnly ${currentStock} items available`
+);
+
+return;
+
+}
+
+}
+for(const item of order.cart){
+
+const productRef =
+doc(db,"products",item.id);
+
+const productSnap =
+await getDoc(productRef);
 
 const product =
 productSnap.data();
@@ -198,8 +236,7 @@ productSnap.data();
 await updateDoc(
 productRef,
 {
-stock:
-Math.max(
+stock: Math.max(
 0,
 (product.stock || 0)
 -
@@ -208,9 +245,11 @@ Math.max(
 }
 );
 
-}
+
 
 }
+
+
 await addDoc(
 collection(db,"orders"),
 order

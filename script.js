@@ -198,7 +198,14 @@ let allProducts = [];
 // FIREBASE STORE INTEGRATION
 // ==========================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {
+getFirestore,
+collection,
+getDocs,
+doc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
@@ -252,10 +259,20 @@ data-image="${product.image}">
 </p>
 
 <div class="cart-control">
-
+${stock > 0 ? `
 <button class="add-btn">
 Add Now
 </button>
+` : `
+<button
+style="
+background:#ccc;
+color:#666;
+cursor:not-allowed;
+">
+Out Of Stock
+</button>
+`}
 
 <div class="qty-box" style="display:none;">
 <button class="qty-btn minus">−</button>
@@ -292,6 +309,7 @@ async function loadFirebaseProducts() {
 
     snapshot.forEach((doc) => {
       const product = doc.data();
+      const stock = product.stock || 0;
       if(product.bestseller !== true) return;
       const cartItem = cart.find(item => item.name === product.name);
       const currentQty = cartItem ? cartItem.quantity : 0;
@@ -414,51 +432,61 @@ updateCartCounter();
 
 });
 
-plus.addEventListener("click", () => {
 
-count++;
-qty.innerText = count;
 
-let cart =
-JSON.parse(localStorage.getItem("cart")) || [];
+plus.addEventListener("click", async () => {
 
 const card =
 control.closest(".product-card") ||
 control.closest(".slide-card");
 
-const name = card.dataset.name;
-const price = parseInt(card.dataset.price);
-const image = card.dataset.image;
+const productRef =
+doc(db,"products",card.dataset.id);
 
-const existing = cart.find(
-item => item.name === name
-);
+const productSnap =
+await getDoc(productRef);
+
+if(!productSnap.exists()) return;
+
+const stock =
+productSnap.data().stock || 0;
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const existing =
+cart.find(item => item.name === card.dataset.name);
+
+const currentQty =
+existing ? existing.quantity : 0;
+
+if(currentQty >= stock){
+
+alert(`Only ${stock} items available`);
+
+return;
+
+}
+
+count++;
+qty.innerText = count;
+
 if(existing){
 
-    existing.quantity += 1;
-    existing.id = card.dataset.id;
+existing.quantity++;
 
-    cart = cart.filter(
-        item => item.name !== card.dataset.name
-    );
+}else{
 
-    cart.push(existing);
-
-}
-
-else{
-    cart.push({
-    id: card.dataset.id,
-    name,
-    price,
-    image,
-    quantity: 1
+cart.push({
+id: card.dataset.id,
+name: card.dataset.name,
+price: parseInt(card.dataset.price),
+image: card.dataset.image,
+quantity: 1
 });
+
 }
-localStorage.setItem(
-"lastAddedImage",
-image
-);
+
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)

@@ -41,7 +41,28 @@ Shopping Cart
 </div>
 
 
-<script>
+<script type="module">
+    import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+authDomain: "samim-d6b27.firebaseapp.com",
+projectId: "samim-d6b27",
+storageBucket: "samim-d6b27.firebasestorage.app",
+messagingSenderId: "147210923031",
+appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
@@ -143,16 +164,44 @@ JSON.stringify(cart)
 location.reload();
 
 }
-function changeQty(index,value){
+
+window.changeQty = async function(index,value){
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
-cart[index].quantity =
-(cart[index].quantity || 1) + value;
+const item = cart[index];
 
-if(cart[index].quantity <= 0){
-    cart.splice(index,1);
+const productRef =
+doc(db,"products",item.id);
+
+const productSnap =
+await getDoc(productRef);
+
+if(!productSnap.exists()) return;
+
+const stock =
+productSnap.data().stock || 0;
+
+const newQty =
+(item.quantity || 1) + value;
+
+if(newQty > stock){
+
+alert(
+`Only ${stock} items available`
+);
+
+return;
+
+}
+
+item.quantity = newQty;
+
+if(item.quantity <= 0){
+
+cart.splice(index,1);
+
 }
 
 localStorage.setItem(
@@ -162,7 +211,7 @@ JSON.stringify(cart)
 
 location.reload();
 
-}
+};
 function clearCart(){
 
 localStorage.removeItem("cart");
