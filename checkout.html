@@ -360,7 +360,10 @@ order
 
 localStorage.removeItem("cart");
 localStorage.removeItem("cartCount");
-
+localStorage.setItem(
+"lastOrderNumber",
+orderNumber
+);
 alert(
 "Order Placed Successfully\n\nOrder ID: " +
 orderNumber
