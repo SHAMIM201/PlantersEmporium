@@ -1099,7 +1099,7 @@ window.location.href =
 }
 
 });
-// IMAGE SEARCH BUTTON
+// AI IMAGE SEARCH
 
 document.addEventListener("DOMContentLoaded",()=>{
 
@@ -1108,15 +1108,58 @@ document.getElementById("imageSearch");
 
 if(!imageSearch) return;
 
-imageSearch.addEventListener("change",(e)=>{
+imageSearch.addEventListener(
+"change",
+async (e)=>{
 
 const file = e.target.files[0];
 
 if(!file) return;
 
-alert(
-"Image Selected: " + file.name
+const reader = new FileReader();
+
+reader.onload = async function(){
+
+const base64 =
+reader.result.split(",")[1];
+
+try{
+
+const response =
+await fetch(
+"https://planters-ai-search.shamim20140168198.workers.dev",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+image: base64
+})
+}
 );
+
+const data =
+await response.json();
+
+console.log(data);
+
+alert(
+"AI Keywords: " +
+(data.keywords || "No Result")
+);
+
+}catch(error){
+
+console.log(error);
+
+alert("AI Search Failed");
+
+}
+
+};
+
+reader.readAsDataURL(file);
 
 });
 
