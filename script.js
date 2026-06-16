@@ -1101,64 +1101,84 @@ window.location.href =
 });
 // AI IMAGE SEARCH
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
-const imageSearch =
-document.getElementById("imageSearch");
+    const imageSearch = document.getElementById("imageSearch");
 
-if(!imageSearch) return;
+    if (!imageSearch) return;
 
-imageSearch.addEventListener(
-"change",
-async (e)=>{
+    imageSearch.addEventListener("change", async (e) => {
 
-const file = e.target.files[0];
+        const file = e.target.files[0];
 
-if(!file) return;
+        if (!file) return;
 
-const reader = new FileReader();
+        const reader = new FileReader();
 
-reader.onload = async function(){
+        reader.onload = async function () {
 
-const base64 =
-reader.result.split(",")[1];
+            const base64 = reader.result.split(",")[1];
 
-try{
+            try {
 
-const response =
-await fetch(
-"https://planters-ai-search.shamim20140168198.workers.dev",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-image: base64
-})
-}
-);
+                const response = await fetch(
+                    "https://planters-ai-search.shamim20140168198.workers.dev",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            image: base64
+                        })
+                    }
+                );
 
-const data =
-await response.json();
-console.log("FULL AI DATA:", data);
+                const data = await response.json();
 
-console.log(data);
+                console.log("FULL AI DATA:", data);
 
-alert(JSON.stringify(data));
+                if (!data.success) {
+                    alert("AI Error: " + (data.error || "Unknown Error"));
+                    return;
+                }
 
-}catch(error){
+                // AI keywords
+                let keywords = data.keywords || "";
 
-console.log(error);
+                // extra text clean kar do
+                keywords = keywords
+                    .replace(/The best answer is/gi, "")
+                    .replace(/\n/g, ",")
+                    .trim();
 
-alert("AI Search Failed");
+                // search box me daalo
+                const searchInput =
+                    document.getElementById("search-input");
 
-}
+                if (searchInput) {
+                    searchInput.value = keywords;
+                }
 
-};
+                // agar filterProducts function hai
+                if (typeof filterProducts === "function") {
+                    filterProducts(keywords);
+                }
 
-reader.readAsDataURL(file);
+                console.log("Final Keywords:", keywords);
 
-});
+            } catch (error) {
+
+                console.error(error);
+
+                alert("AI Search Failed");
+
+            }
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
 
 });
