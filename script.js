@@ -290,6 +290,7 @@ style="${currentQty > 0 ? 'display:none' : ''}">
 Add Now
 </button>
 ` : `
+
 <button
 style="
 background:#ccc;
@@ -300,21 +301,13 @@ Out Of Stock
 </button>
 `}
 
-<div class="qty-box"
-style="${currentQty > 0 ? 'display:flex' : 'display:none'}">
-
+<div class="qty-box" style="display:none;">
 <button class="qty-btn minus">−</button>
-
-<span class="qty-number">
-${currentQty}
-</span>
-
+<span class="qty-number">0</span>
 <button class="qty-btn plus">+</button>
-
 </div>
 
 </div>
-
 
 
 </div>
@@ -389,7 +382,7 @@ Out Of Stock
 
 </div>
 
-</div>
+
 
 </div>
 `;
@@ -1017,9 +1010,91 @@ function rotateReviews() {
     }, 800);
 
 }
+function loadMiniCart(){
+
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const container =
+document.getElementById("miniCartItems");
+
+if(!container) return;
+
+if(cart.length === 0){
+
+container.innerHTML = `
+<p style="padding:20px;text-align:center;">
+Your cart is empty
+</p>
+`;
+
+return;
+}
+let totalItems = 0;
+let totalAmount = 0;
+container.innerHTML = "";
+
+cart.forEach(item=>{
+  totalItems += item.quantity;
+totalAmount += item.price * item.quantity;
+
+container.innerHTML += `
+<div class="mini-cart-item">
+
+<img src="${item.image}" alt="${item.name}">
+
+<div class="mini-cart-info">
+
+<div class="mini-cart-top">
+
+<div>
+
+<h4>${item.name}</h4>
+
+<p>₹${item.price}</p>
+
+</div>
+
+<div class="mini-cart-qty">
+
+<button onclick="changeMiniQty('${item.name}','minus')">
+-
+</button>
+
+<span>${item.quantity}</span>
+
+<button onclick="changeMiniQty('${item.name}','plus')">
++
+</button>
+
+</div>
+
+</div>
+
+<button
+class="mini-remove"
+onclick="removeMiniItem('${item.name}')">
+Remove
+</button>
+
+</div>
+</div>
+`;
+
+});
+
+document.getElementById(
+"miniCartTotalItems"
+).innerText = totalItems;
+
+document.getElementById(
+"miniCartTotalAmount"
+).innerText =
+"₹" + totalAmount;
+}
 
 function updateFloatingCart(){
-
+ 
 const cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -1217,3 +1292,94 @@ for (const key in keywordMap) {
     });
 
 });
+document.addEventListener("DOMContentLoaded",()=>{
+
+const miniCart =
+document.getElementById("miniCart");
+
+const closeMiniCart =
+document.getElementById("closeMiniCart");
+
+const cartBtn =
+document.querySelector(".cart-icon");
+
+if(cartBtn){
+
+cartBtn.addEventListener("click",(e)=>{
+
+e.preventDefault();
+
+miniCart.classList.add("active");
+
+loadMiniCart();
+
+});
+
+}
+
+if(closeMiniCart){
+
+closeMiniCart.addEventListener("click",()=>{
+
+miniCart.classList.remove("active");
+
+});
+
+}
+
+});
+window.changeMiniQty = function(name, action){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const item =
+cart.find(i => i.name === name);
+
+if(!item) return;
+
+if(action === "plus"){
+
+item.quantity++;
+
+}else{
+
+item.quantity--;
+
+if(item.quantity <= 0){
+
+cart = cart.filter(
+i => i.name !== name
+);
+
+}
+
+}
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+loadMiniCart();
+updateCartCounter();
+
+};
+window.removeMiniItem = function(name){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart = cart.filter(
+item => item.name !== name
+);
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+loadMiniCart();
+updateCartCounter();
+
+};

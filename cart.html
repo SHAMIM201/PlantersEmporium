@@ -91,14 +91,7 @@ Your Cart Is Empty
 cart.forEach((product,index)=>{
 
 cartItems.innerHTML += `
-
-<div class="cart-item"
-style="
-border:1px solid #ddd;
-padding:15px;
-margin:15px;
-border-radius:10px;
-">
+<div class="cart-item">
 
 <img
 src="${product.image}"
@@ -106,26 +99,25 @@ width="150"
 style="
 border-radius:10px;
 display:block;
-margin-bottom:10px;
 ">
+
+<div class="cart-info">
 
 <h2>${product.name}</h2>
 
 <p>₹${product.price}</p>
 
-<div style="margin:10px 0;">
+<div class="qty-box">
 
-<button onclick="changeQty(${index},-1)">
-−
-</button>
+<button class="qty-btn"
+onclick="changeQty(${index},-1)">−</button>
 
-<span style="padding:0 15px;">
+<span class="qty-number">
 ${product.quantity || 1}
 </span>
 
-<button onclick="changeQty(${index},1)">
-+
-</button>
+<button class="qty-btn"
+onclick="changeQty(${index},1)">+</button>
 
 </div>
 
@@ -135,14 +127,14 @@ Total : ₹${product.price * (product.quantity || 1)}
 
 <button
 onclick="removeItem(${index})"
-class="order-btn">
-
+class="order-btn remove-btn">
 Remove
-
 </button>
 
 </div>
 
+</div>
+</div>
 `;
 
 

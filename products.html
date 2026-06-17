@@ -161,6 +161,18 @@ document.getElementById("products");
 
 const searchBox =
 document.getElementById("searchBox");
+const imageSearch = document.createElement("input");
+
+imageSearch.type = "file";
+imageSearch.accept = "image/*";
+
+imageSearch.style.display = "block";
+imageSearch.style.margin = "20px auto";
+
+document.body.insertBefore(
+  imageSearch,
+  document.getElementById("products")
+);
 
 const categoryFilter =
 document.getElementById("categoryFilter");
@@ -345,6 +357,35 @@ onclick="location.href='product.html?id=${product.id}'">
 </div>
 
 `;
+
+});
+imageSearch.addEventListener("change", () => {
+
+const file = imageSearch.files[0];
+
+if(!file) return;
+
+const fileName =
+file.name.toLowerCase();
+
+if(
+fileName.includes("water")
+){
+searchBox.value =
+"Watering Can";
+}
+else if(
+fileName.includes("basket")
+){
+searchBox.value =
+"Basket";
+}
+else{
+searchBox.value =
+"Pot";
+}
+
+renderProducts();
 
 });
 
