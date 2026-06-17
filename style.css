@@ -2859,3 +2859,21 @@ nav ul{
 }
 
 }
+/* PLANT ASSISTANT MOBILE FIX */
+
+@media (max-width:768px){
+
+.chat-container,
+.plant-assistant,
+.chatbot-container{
+
+    width:95% !important;
+    max-width:95% !important;
+
+    right:10px !important;
+    left:auto !important;
+
+    height:70vh !important;
+}
+
+}
