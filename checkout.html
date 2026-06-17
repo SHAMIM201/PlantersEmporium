@@ -145,6 +145,20 @@ Order On WhatsApp
 </div>
 
 <script type="module">
+  document.getElementById("name").value =
+localStorage.getItem("checkoutName") || "";
+
+document.getElementById("phone").value =
+localStorage.getItem("checkoutPhone") || "";
+
+document.getElementById("address").value =
+localStorage.getItem("checkoutAddress") || "";
+
+document.getElementById("city").value =
+localStorage.getItem("checkoutCity") || "";
+
+document.getElementById("pincode").value =
+localStorage.getItem("checkoutPincode") || "";
   window.copyUpi = function(){
 
 navigator.clipboard.writeText(
@@ -166,6 +180,10 @@ import {
   updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {
+  getAuth
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
@@ -178,6 +196,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 const cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -232,7 +251,15 @@ summary.innerHTML += `
 `;
 
 window.placeOrder = async function(){
+if(!auth.currentUser){
 
+alert("Please Login First");
+
+window.location.href = "account.html";
+
+return;
+
+}
 try{
 
 const name = document.getElementById("name").value.trim();
@@ -265,7 +292,7 @@ const orderNumber =
 
 const order = {
 
-  orderNumber,
+orderNumber,
 
 name,
 phone,
@@ -273,6 +300,8 @@ address,
 city,
 pincode,
 
+email: auth.currentUser.email,
+userId: auth.currentUser.uid,
 
 cart:
 JSON.parse(localStorage.getItem("cart")) || [],
@@ -285,7 +314,6 @@ paymentMethod === "UPI Payment"
 createdAt:new Date()
 
 };
-
 
 for(const item of order.cart){
 

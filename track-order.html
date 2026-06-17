@@ -2,22 +2,37 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Track Order</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Track Your Order</h2>
+<div class="track-container">
 
-<input
-type="text"
-id="orderId"
-placeholder="Enter Order ID">
+<h1>📦 Track Your Order</h1>
 
-<button onclick="trackOrder()">
-Track Order
-</button>
+<div class="track-search">
+
+    <input
+    type="text"
+    id="orderId"
+    placeholder="Enter Order ID">
+
+    <input
+    type="text"
+    id="phoneNumber"
+    placeholder="Enter Mobile Number">
+
+    <button class="track-btn" onclick="trackOrder()">
+        Track Order
+    </button>
+
+</div>
 
 <div id="result"></div>
+
+</div>
 
 <script type="module" src="track-order.js"></script>
 

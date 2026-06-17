@@ -4,7 +4,9 @@ from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import {
 getFirestore,
 collection,
-getDocs
+getDocs,
+doc,
+updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -25,16 +27,21 @@ window.trackOrder = async function(){
 const orderId =
 document.getElementById("orderId").value.trim();
 
+const phoneNumber =
+document.getElementById("phoneNumber").value.trim();
+
 const result =
 document.getElementById("result");
-
 if(!orderId){
+    result.innerHTML =
+    "<p style='color:red'>Please enter Order ID</p>";
+    return;
+}
 
-result.innerHTML =
-"<p>Please enter Order ID</p>";
-
-return;
-
+if(!phoneNumber){
+    result.innerHTML =
+    "<p style='color:red'>Please enter Mobile Number</p>";
+    return;
 }
 
 result.innerHTML =
@@ -54,21 +61,107 @@ snapshot.forEach(doc=>{
 const order = doc.data();
 const history = order.trackingHistory || [];
 
-if(order.orderNumber === orderId){
+if(
+    order.orderNumber === orderId &&
+    order.phone === phoneNumber
+){
 
 found = true;
-
 let historyHtml = "";
 
 let allSteps = [];
+const progressSteps = [
+"Order Confirmed",
+"Packed",
+"Shipped",
+"Out For Delivery",
+"Delivered"
+];
 
+let currentStep =
+progressSteps.indexOf(order.status);
+
+if(currentStep < 0){
+currentStep = 0;
+}
+
+let progressHtml = `
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:30px 0;
+position:relative;
+">
+
+<div style="
+position:absolute;
+top:18px;
+left:0;
+right:0;
+height:4px;
+background:#ddd;
+z-index:1;
+"></div>
+`;
+
+progressSteps.forEach((step,index)=>{
+
+progressHtml += `
+<div style="
+position:relative;
+z-index:2;
+text-align:center;
+flex:1;
+">
+
+<div style="
+width:35px;
+height:35px;
+margin:auto;
+border-radius:50%;
+background:${
+index <= currentStep
+? '#16a34a'
+: '#fff'
+};
+border:3px solid ${
+index <= currentStep
+? '#16a34a'
+: '#bbb'
+};
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+font-weight:bold;
+">
+${index <= currentStep ? '✓' : ''}
+</div>
+
+<div style="
+font-size:12px;
+margin-top:8px;
+font-weight:bold;
+">
+${step}
+</div>
+
+</div>
+`;
+});
+
+progressHtml += `</div>`;
+
+if(order.status === "Cancelled"){
+    progressHtml = "";
+}
 
 
 if(order.status === "Cancelled"){
 
-history.forEach(item=>{
-allSteps.push(item.status);
-});
+allSteps = history.map(item => item.status);
 
 }
 else{
@@ -85,10 +178,23 @@ allSteps = [
 
 allSteps.forEach((stepName,index)=>{
 
-const stepData =
+let stepData =
 history.find(x => x.status === stepName);
 
 let completed = !!stepData;
+
+if(
+allSteps.indexOf(stepName)
+<=
+allSteps.indexOf(order.status)
+){
+completed = true;
+}
+if(completed && !stepData){
+stepData = {
+time: "Status Updated"
+};
+}
 
 if(
 order.status === "Cancelled" &&
@@ -174,7 +280,7 @@ margin-top:5px;
 color:#666;
 font-size:14px;
 ">
-${completed ? stepData.time : 'Not yet updated'}
+${stepData?.time || 'Not yet updated'}
 </div>
 
 <div style="
@@ -240,10 +346,29 @@ ${order.phone}
 <b>Status:</b>
 ${order.status}
 </p>
+${(order.status === "Order Confirmed" || order.status === "Packed") ? `
+
+<button
+onclick="cancelOrder('${order.orderNumber}')"
+style="
+background:#dc3545;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+font-weight:bold;
+">
+Cancel Order
+</button>
+
+` : ''}
 <h3 style="margin-top:25px;">
 Tracking Updates
 </h3>
 
+${progressHtml}
 ${historyHtml}
 <div style="
 margin-top:20px;
@@ -307,6 +432,67 @@ Something went wrong
 </div>
 
 `;
+
+}
+
+};
+window.cancelOrder = async function(orderNumber){
+
+const ok = confirm(
+"Are you sure you want to cancel this order?"
+);
+
+if(!ok) return;
+
+try{
+
+const snapshot =
+await getDocs(
+collection(db,"orders")
+);
+
+for(const d of snapshot.docs){
+
+const order = d.data();
+
+if(order.orderNumber === orderNumber){
+
+const history =
+order.trackingHistory || [];
+
+history.push({
+status:"Cancelled",
+time:new Date().toLocaleString()
+});
+
+await updateDoc(
+doc(db,"orders",d.id),
+{
+status:"Cancelled",
+trackingHistory:history
+}
+);
+
+
+
+
+alert("Order Cancelled Successfully");
+
+trackOrder();
+
+break;
+
+
+}
+
+}
+
+}
+catch(error){
+
+console.error(error);
+
+alert("Failed to cancel order");
 
 }
 

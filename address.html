@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Address</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="checkout-form">
+
+<h2>Select Delivery Address</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+<br><br>
+
+<input type="tel" id="phone" placeholder="Phone Number">
+<br><br>
+
+<input type="text" id="address" placeholder="Address">
+<br><br>
+
+<input type="text" id="city" placeholder="City">
+<br><br>
+
+<input type="text" id="pincode" placeholder="Pincode">
+<br><br>
+
+<button id="continueBtn" class="order-btn">
+
+Continue To Payment
+</button>
+
+</div>
+
+<script>
+    document.getElementById("name").value =
+localStorage.getItem("checkoutName") || "";
+
+document.getElementById("phone").value =
+localStorage.getItem("checkoutPhone") || "";
+
+document.getElementById("address").value =
+localStorage.getItem("checkoutAddress") || "";
+
+document.getElementById("city").value =
+localStorage.getItem("checkoutCity") || "";
+
+document.getElementById("pincode").value =
+localStorage.getItem("checkoutPincode") || "";
+
+document
+.getElementById("continueBtn")
+.addEventListener("click",()=>{
+
+const name =
+document.getElementById("name").value;
+
+const phone =
+document.getElementById("phone").value;
+
+const address =
+document.getElementById("address").value;
+
+const city =
+document.getElementById("city").value;
+
+const pincode =
+document.getElementById("pincode").value;
+
+if(
+!name ||
+!phone ||
+!address ||
+!city ||
+!pincode
+){
+alert("Fill all fields");
+return;
+}
+
+localStorage.setItem("checkoutName",name);
+localStorage.setItem("checkoutPhone",phone);
+localStorage.setItem("checkoutAddress",address);
+localStorage.setItem("checkoutCity",city);
+localStorage.setItem("checkoutPincode",pincode);
+localStorage.setItem("profilePhone", phone);
+
+localStorage.setItem(
+"profileAddress",
+address + ", " + city + " - " + pincode
+);
+window.location.href="checkout.html";
+
+});
+
+</script>
+
+</body>
+</html>

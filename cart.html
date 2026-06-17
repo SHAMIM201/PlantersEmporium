@@ -32,9 +32,9 @@ Shopping Cart
 
         <br><br>
 
-        <a href="checkout.html" class="order-btn">
-               Proceed To Checkout
-          </a>
+       <a href="#" id="checkoutBtn" class="order-btn">
+    Select Address
+</a>
               </div>
 
 </div>
@@ -229,19 +229,21 @@ e.preventDefault();
 if(auth.currentUser){
 
     window.location.href =
-    "checkout.html";
+    "address.html";
 
 }else{
 
-    alert(
-    "Please Login First"
+    alert("Please Login First");
+
+    localStorage.setItem(
+        "redirectAfterLogin",
+        "address.html"
     );
 
     window.location.href =
     "account.html";
 
 }
-
 });
 </script>
 

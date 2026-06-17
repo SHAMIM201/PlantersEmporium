@@ -37,8 +37,7 @@ password
 .then(()=>{
 
 alert("Account Created");
-
-window.location.href = "checkout.html";
+window.location.href = "address.html";
 
 })
 .catch(err=>{
@@ -63,8 +62,7 @@ password
 .then(()=>{
 
 alert("Login Success");
-
-window.location.href = "checkout.html";
+window.location.href = "profile.html";
 
 })
 .catch(err=>{
@@ -78,19 +76,46 @@ window.logout = function(){
 signOut(auth);
 
 };
-
 onAuthStateChanged(auth,user=>{
 
 const info =
 document.getElementById("userInfo");
 
 if(user){
-
+document.getElementById("authBox").style.display = "none";
 info.innerHTML =
 "Logged In: " + user.email;
 
-}else{
+const profileEmail =
+document.getElementById("profileEmail");
 
+if(profileEmail){
+profileEmail.innerText = user.email;
+}
+
+const profilePhone =
+document.getElementById("profilePhone");
+
+if(profilePhone){
+
+profilePhone.innerText =
+localStorage.getItem("profilePhone")
+|| "-";
+
+}
+
+const profileAddress =
+document.getElementById("profileAddress");
+
+if(profileAddress){
+
+profileAddress.innerText =
+localStorage.getItem("profileAddress")
+|| "-";
+
+}
+}else{
+document.getElementById("authBox").style.display = "block";
 info.innerHTML =
 "Not Logged In";
 
