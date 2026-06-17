@@ -33,10 +33,9 @@ Shopping Cart
         <br><br>
 
         <a href="checkout.html" class="order-btn">
-            Proceed To Checkout
-        </a>
-
-    </div>
+               Proceed To Checkout
+          </a>
+              </div>
 
 </div>
 
@@ -51,6 +50,10 @@ doc,
 getDoc
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {
+getAuth
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
@@ -63,6 +66,7 @@ appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);;
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
@@ -216,6 +220,29 @@ location.reload();
 console.log(
 JSON.parse(localStorage.getItem("cart"))
 );
+document
+.getElementById("checkoutBtn")
+.addEventListener("click",(e)=>{
+
+e.preventDefault();
+
+if(auth.currentUser){
+
+    window.location.href =
+    "checkout.html";
+
+}else{
+
+    alert(
+    "Please Login First"
+    );
+
+    window.location.href =
+    "account.html";
+
+}
+
+});
 </script>
 
 </body>

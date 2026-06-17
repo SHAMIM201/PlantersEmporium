@@ -1383,3 +1383,96 @@ loadMiniCart();
 updateCartCounter();
 
 };
+const aiButton =
+document.getElementById("aiButton");
+
+const aiPopup =
+document.getElementById("aiPopup");
+
+const closeAI =
+document.getElementById("closeAI");
+
+aiButton.onclick = () => {
+    aiPopup.style.display = "flex";
+};
+
+closeAI.onclick = () => {
+    aiPopup.style.display = "none";
+};
+const sendBtn = document.getElementById("sendAI");
+const input = document.getElementById("aiInput");
+const messages = document.getElementById("aiMessages");
+
+const plantAnswers = {
+
+"money plant":
+"🌱 Money Plant ko indirect sunlight chahiye. Hafte me 2-3 baar paani dein.",
+
+"snake plant":
+"🌿 Snake Plant low maintenance hai aur kam roshni me bhi grow karta hai.",
+
+"indoor plant":
+"🏡 Best Indoor Plants: Money Plant, Snake Plant, ZZ Plant, Areca Palm.",
+
+"outdoor plant":
+"☀️ Best Outdoor Plants: Hibiscus, Bougainvillea, Rose, Marigold.",
+
+"watering":
+"💧 Plants ko tab paani dein jab upar ki mitti dry lage.",
+
+"pot":
+"🪴 Drainage holes wala pot sabse best rehta hai.",
+
+"hanging pot":
+"🪴 Hanging pots Money Plant aur Spider Plant ke liye perfect hain.",
+
+"fertilizer":
+"🌿 Mahine me 1-2 baar organic fertilizer use karein.",
+
+"default":
+"🌱 Sorry, mujhe is topic ki jankari nahi hai. Plant ya pot se related question puchhiye."
+};
+function getPlantAnswer(question){
+
+question = question.toLowerCase();
+
+for(let key in plantAnswers){
+
+if(question.includes(key)){
+
+return plantAnswers[key];
+
+}
+
+}
+
+return plantAnswers["default"];
+
+}
+sendBtn.addEventListener("click", () => {
+
+let question = input.value.trim();
+
+if(!question) return;
+
+messages.innerHTML += `
+<div class="user-msg">
+${question}
+</div>
+`;
+
+const answer =
+getPlantAnswer(question);
+
+messages.innerHTML += `
+<div class="ai-msg">
+${answer}
+</div>
+`;
+
+input.value = "";
+
+messages.scrollTop =
+messages.scrollHeight;
+
+});

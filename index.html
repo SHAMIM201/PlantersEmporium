@@ -78,7 +78,7 @@ gtag('config', 'G-NHDB8LZE2N');
         </div>
     </div>
 
-    <button id="topBtn">↑</button>
+
 
     <div class="top-bar">
         <div>📞 9810475303</div>
@@ -104,8 +104,9 @@ gtag('config', 'G-NHDB8LZE2N');
                 <li><a href="#contact">Contact</a></li>
                 <li><a href="track-order.html">Track Order</a></li>
             </ul>
-        </nav>
-        <a href="cart.html" class="cart-icon">🛒 Cart <span id="cart-count">0</span></a>
+        </nav>   
+
+   
     </header>
 <section class="search-section">
 
@@ -134,6 +135,23 @@ gtag('config', 'G-NHDB8LZE2N');
 >
 
     </div>
+    <div class="header-icons">
+<a href="cart.html" class="header-icon">
+<i class="fas fa-shopping-cart"></i>
+<span>Cart</span>
+<span id="cart-count">0</span>
+</a>
+
+<a href="account.html" class="header-icon">
+<i class="far fa-user"></i>
+<span>Account</span>
+</a>
+
+<a href="wishlist.html" class="header-icon">
+<i class="far fa-heart"></i>
+<span>Wishlist</span>
+</a>
+</div>
 
     <div id="searchSuggestions" class="search-suggestions"></div>
 
@@ -147,7 +165,9 @@ font-size:18px;
 font-weight:600;
 color:#666;">
 ❌ No Products Found
+
 </div>
+
     <section class="hero">
         <div class="slide active"><img src="images/banner1.jpeg" alt="Banner 1"></div>
         <div class="slide"><img src="images/banner2.jpeg" alt="Banner 2"></div>
@@ -454,5 +474,45 @@ Checkout
     </div>
 
 </div>
+<!-- AI Assistant Button -->
+
+<div id="aiButton">
+🌱
+</div>
+
+<!-- AI Assistant Popup -->
+
+<div id="aiPopup">
+
+<div class="ai-header">
+🌱 Plant Assistant
+<span id="closeAI">✖</span>
+</div>
+
+<div id="aiMessages">
+
+<div class="ai-msg">
+Hello! Ask me about plants and pots.
+</div>
+
+</div>
+
+<div class="ai-input">
+
+<input
+type="text"
+id="aiInput"
+placeholder="Ask something..."
+
+>
+
+<button id="sendAI">
+Send
+</button>
+
+</div>
+
+</div>
+
 </body>
 </html>
