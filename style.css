@@ -2603,6 +2603,14 @@ gap:15px;
     flex-shrink:0;
     gap:25px;
 }
+@media(max-width:768px){
+
+.header-icons{
+    min-width:0 !important;
+    width:100% !important;
+}
+
+}
 .search-section{
     display:flex;
     justify-content:center;
@@ -2859,21 +2867,30 @@ nav ul{
 }
 
 }
-/* PLANT ASSISTANT MOBILE FIX */
+/* AI ASSISTANT MOBILE FIX */
 
-@media (max-width:768px){
+@media(max-width:768px){
 
-.chat-container,
-.plant-assistant,
-.chatbot-container{
+#aiPopup{
 
-    width:95% !important;
-    max-width:95% !important;
+    right:5px !important;
+    left:5px !important;
 
-    right:10px !important;
-    left:auto !important;
+    width:auto !important;
+    max-width:none !important;
 
     height:70vh !important;
+
+    bottom:70px !important;
+}
+
+#aiButton{
+
+    right:8px !important;
+    bottom:260px !important;
+
+    width:45px !important;
+    height:45px !important;
 }
 
 }
