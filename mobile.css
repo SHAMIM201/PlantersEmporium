@@ -1,0 +1,227 @@
+/* ===================================
+   MOBILE RESPONSIVE
+=================================== */
+
+@media (max-width:768px){
+
+/* Header */
+header{
+    flex-direction:column !important;
+    padding:10px !important;
+}
+
+.logo img{
+    width:100px !important;
+}
+
+.search-section{
+    width:100% !important;
+    margin:10px 0 !important;
+}
+
+.header-icons{
+    width:100% !important;
+    justify-content:center !important;
+    flex-wrap:wrap !important;
+    gap:12px !important;
+}
+
+/* Categories */
+.category-grid{
+    grid-template-columns:repeat(2,1fr) !important;
+    gap:10px !important;
+}
+
+/* Products */
+.product-grid{
+    grid-template-columns:repeat(2,1fr) !important;
+    gap:10px !important;
+}
+
+.product-card h3{
+    font-size:15px !important;
+}
+
+/* Floating Cart - Blinkit Style */
+.floating-cart{
+    position:fixed !important;
+
+    left:50% !important;
+    transform:translateX(-50%) !important;
+
+    bottom:15px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+
+    width:calc(100vw - 40px) !important;
+    max-width:320px !important;
+
+    padding:12px 16px !important;
+
+    border-radius:18px !important;
+
+    box-sizing:border-box !important;
+}
+.cart-images img{
+    width:32px !important;
+    height:32px !important;
+}
+
+.cart-title{
+    font-size:18px !important;
+    font-weight:700 !important;
+}
+
+#floating-cart-count{
+    font-size:13px !important;
+}
+.floating-cart-arrow{
+    width:42px !important;
+    height:42px !important;
+    font-size:18px !important;
+}
+
+/* Right Side Icons */
+.whatsapp,
+.call-btn,
+.instagram-btn,
+.facebook-btn,
+.youtube-btn,
+#aiButton{
+    width:38px !important;
+    height:38px !important;
+    right:5px !important;
+}
+
+.whatsapp{bottom:20px !important;}
+.call-btn{bottom:65px !important;}
+.instagram-btn{bottom:110px !important;}
+.facebook-btn{bottom:155px !important;}
+.youtube-btn{bottom:200px !important;}
+#aiButton{bottom:245px !important;}
+
+/* Track Order */
+.track-search{
+    flex-direction:column !important;
+}
+
+.track-search input,
+.track-btn{
+    width:100% !important;
+}
+
+.track-container{
+    width:95% !important;
+    margin:15px auto !important;
+    padding:15px !important;
+}
+
+}
+@media (max-width:768px){
+
+.track-search{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+}
+
+.track-search input{
+    width:100% !important;
+    display:block !important;
+}
+
+.track-btn{
+    width:100% !important;
+    height:48px !important;
+}
+
+.track-container{
+    padding:15px !important;
+}
+
+#result{
+    min-height:0 !important;
+    margin-top:10px !important;
+}
+
+}
+@media (max-width:768px){
+
+.track-search{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+}
+
+.track-search input{
+    width:100% !important;
+    height:48px !important;
+}
+
+.track-btn{
+    width:100% !important;
+    height:48px !important;
+}
+
+#result{
+    min-height:0 !important;
+    height:auto !important;
+    margin-top:15px !important;
+}
+
+.track-container{
+    padding:15px !important;
+}
+
+}
+@media (max-width:768px){
+
+.track-container{
+    width:95% !important;
+    padding:15px !important;
+    margin:15px auto !important;
+}
+
+.track-search{
+    display:block !important;
+}
+
+.track-search input{
+    width:100% !important;
+    margin-bottom:10px !important;
+    display:block !important;
+}
+
+.track-btn{
+    width:100% !important;
+    display:block !important;
+}
+
+}
+@media (max-width:768px){
+
+.track-container{
+    width:95% !important;
+    max-width:95% !important;
+    padding:15px !important;
+    margin:15px auto !important;
+}
+
+.track-search{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+}
+
+.track-search input{
+    width:100% !important;
+    box-sizing:border-box !important;
+}
+
+.track-btn{
+    width:100% !important;
+}
+
+}
