@@ -1,227 +1,330 @@
-/* ===================================
-   MOBILE RESPONSIVE
-=================================== */
+/* =========================
+   MOBILE RESPONSIVE CSS
+========================= */
 
 @media (max-width:768px){
 
 /* Header */
+
 header{
     flex-direction:column !important;
     padding:10px !important;
+    gap:10px;
 }
 
 .logo img{
     width:100px !important;
 }
 
+.menu-btn{
+    position:absolute;
+    right:15px;
+    top:15px;
+}
+
+/* Navigation */
+
+#navbar{
+    width:100%;
+}
+
+#navbar ul{
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+    padding:10px 0;
+}
+
+/* Search + Icons */
+
 .search-section{
+    display:flex !important;
+    flex-direction:column !important;
+    width:100%;
+    padding:10px !important;
+    gap:12px;
+}
+
+.google-search-box{
     width:100% !important;
-    margin:10px 0 !important;
+    max-width:100% !important;
+}
+
+#searchInput{
+    font-size:14px;
+}
+
+#searchBtn{
+    padding:8px 12px;
+    font-size:13px;
 }
 
 .header-icons{
     width:100% !important;
+    min-width:0 !important;
     justify-content:center !important;
-    flex-wrap:wrap !important;
-    gap:12px !important;
+    gap:20px !important;
+    flex-wrap:wrap;
 }
 
-/* Categories */
+.header-icon{
+    font-size:13px;
+}
+
+.header-icon i{
+    font-size:18px;
+}
+
+/* Hero */
+
+.hero{
+    height:280px !important;
+}
+
+.slide img{
+    height:280px !important;
+}
+
+.hero-content{
+    width:90%;
+    padding:15px;
+}
+
+.hero-content h1{
+    font-size:24px !important;
+}
+
+.hero-content p{
+    font-size:13px !important;
+}
+
+/* Benefits */
+
+.benefits{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.benefit-card{
+    font-size:12px;
+    padding:12px;
+}
+
+/* Category */
+
 .category-grid{
-    grid-template-columns:repeat(2,1fr) !important;
-    gap:10px !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:10px;
+}
+
+.category-card img{
+    height:140px;
 }
 
 /* Products */
+
 .product-grid{
-    grid-template-columns:repeat(2,1fr) !important;
-    gap:10px !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:10px;
+}
+
+.product-card{
+    width:100% !important;
+    padding:10px;
+}
+
+.product-card img{
+    height:140px !important;
+    object-fit:contain !important;
 }
 
 .product-card h3{
-    font-size:15px !important;
+    font-size:14px;
 }
 
-/* Floating Cart - Blinkit Style */
+.price{
+    font-size:16px !important;
+}
+
+/* Featured Slider */
+
+.slide-card{
+    min-width:150px !important;
+    width:150px !important;
+}
+
+.slide-card img{
+    height:120px !important;
+}
+
+.slide-btn{
+    width:35px;
+    height:35px;
+}
+
+/* Reviews */
+
+.review-card{
+    min-width:250px;
+    width:250px;
+}
+
+/* Gallery */
+
+.gallery-grid{
+    grid-template-columns:1fr 1fr;
+}
+
+.gallery-grid img{
+    height:140px;
+}
+
+/* About */
+
+.about{
+    padding:40px 15px;
+}
+
+.about p{
+    font-size:14px;
+}
+
+/* Contact */
+
+#contact{
+    padding:40px 15px;
+}
+
+#contact p{
+    font-size:14px;
+}
+
+/* Floating Buttons */
+
+#aiButton,
+.youtube-btn,
+.facebook-btn,
+.instagram-btn,
+.call-btn,
+.whatsapp{
+    width:42px !important;
+    height:42px !important;
+    right:8px !important;
+}
+
+#aiButton{bottom:250px;}
+.youtube-btn{bottom:200px;}
+.facebook-btn{bottom:150px;}
+.instagram-btn{bottom:100px;}
+.call-btn{bottom:50px;}
+.whatsapp{bottom:0;}
+
+/* Floating Cart */
+
 .floating-cart{
-    position:fixed !important;
-
-    left:50% !important;
-    transform:translateX(-50%) !important;
-
-    bottom:15px !important;
-
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-
-    width:calc(100vw - 40px) !important;
-    max-width:320px !important;
-
-    padding:12px 16px !important;
-
-    border-radius:18px !important;
-
-    box-sizing:border-box !important;
+    width:92% !important;
+    bottom:70px !important;
 }
+
+/* Mini Cart */
+
+.mini-cart{
+    width:100% !important;
+}
+
+/* Footer */
+
+.footer-links{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+}
+
+.footer-links a{
+    font-size:13px;
+}
+
+}
+/* =========================
+   TRACK ORDER MOBILE FIX
+========================= */
+
+@media (max-width:768px){
+
+.track-container{
+    width:95% !important;
+    margin:15px auto !important;
+    padding:20px 15px !important;
+    border-radius:20px;
+}
+
+.track-container h1{
+    font-size:28px !important;
+    text-align:center;
+    line-height:1.3;
+    margin-bottom:20px !important;
+}
+
+.track-search{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:12px !important;
+    width:100% !important;
+}
+
+.track-search input{
+    width:100% !important;
+    height:50px !important;
+    flex:none !important;
+    font-size:16px !important;
+}
+
+.track-btn{
+    width:100% !important;
+    height:50px !important;
+    font-size:16px !important;
+}
+
+#result{
+    margin-top:15px;
+    overflow-x:auto;
+}
+
+}
+@media(max-width:768px){
+
+.floating-cart{
+height:65px;
+width:90%;
+bottom:10px;
+padding:8px 14px;
+}
+
 .cart-images img{
-    width:32px !important;
-    height:32px !important;
+width:34px;
+height:34px;
 }
 
 .cart-title{
-    font-size:18px !important;
-    font-weight:700 !important;
+font-size:15px;
 }
 
 #floating-cart-count{
-    font-size:13px !important;
+font-size:12px;
 }
+
 .floating-cart-arrow{
-    width:42px !important;
-    height:42px !important;
-    font-size:18px !important;
-}
-
-/* Right Side Icons */
-.whatsapp,
-.call-btn,
-.instagram-btn,
-.facebook-btn,
-.youtube-btn,
-#aiButton{
-    width:38px !important;
-    height:38px !important;
-    right:5px !important;
-}
-
-.whatsapp{bottom:20px !important;}
-.call-btn{bottom:65px !important;}
-.instagram-btn{bottom:110px !important;}
-.facebook-btn{bottom:155px !important;}
-.youtube-btn{bottom:200px !important;}
-#aiButton{bottom:245px !important;}
-
-/* Track Order */
-.track-search{
-    flex-direction:column !important;
-}
-
-.track-search input,
-.track-btn{
-    width:100% !important;
-}
-
-.track-container{
-    width:95% !important;
-    margin:15px auto !important;
-    padding:15px !important;
+width:38px;
+height:38px;
+font-size:20px;
 }
 
 }
-@media (max-width:768px){
-
-.track-search{
-    display:flex !important;
-    flex-direction:column !important;
-    gap:10px !important;
-}
-
-.track-search input{
-    width:100% !important;
-    display:block !important;
-}
-
-.track-btn{
-    width:100% !important;
-    height:48px !important;
-}
-
-.track-container{
-    padding:15px !important;
-}
-
-#result{
-    min-height:0 !important;
-    margin-top:10px !important;
-}
-
-}
-@media (max-width:768px){
-
-.track-search{
-    display:flex !important;
-    flex-direction:column !important;
-    gap:10px !important;
-}
-
-.track-search input{
-    width:100% !important;
-    height:48px !important;
-}
-
-.track-btn{
-    width:100% !important;
-    height:48px !important;
-}
-
-#result{
-    min-height:0 !important;
-    height:auto !important;
-    margin-top:15px !important;
-}
-
-.track-container{
-    padding:15px !important;
-}
-
-}
-@media (max-width:768px){
-
-.track-container{
-    width:95% !important;
-    padding:15px !important;
-    margin:15px auto !important;
-}
-
-.track-search{
-    display:block !important;
-}
-
-.track-search input{
-    width:100% !important;
-    margin-bottom:10px !important;
-    display:block !important;
-}
-
-.track-btn{
-    width:100% !important;
-    display:block !important;
-}
-
-}
-@media (max-width:768px){
-
-.track-container{
-    width:95% !important;
-    max-width:95% !important;
-    padding:15px !important;
-    margin:15px auto !important;
-}
-
-.track-search{
-    display:flex !important;
-    flex-direction:column !important;
-    gap:10px !important;
-}
-
-.track-search input{
-    width:100% !important;
-    box-sizing:border-box !important;
-}
-
-.track-btn{
-    width:100% !important;
-}
-
-}
+.whatsapp{bottom:90px !important;}
+.call-btn{bottom:140px !important;}
+.instagram-btn{bottom:190px !important;}
+.facebook-btn{bottom:240px !important;}
+.youtube-btn{bottom:290px !important;}
+#aiButton{bottom:340px !important;}

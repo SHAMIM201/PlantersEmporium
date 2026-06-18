@@ -494,6 +494,24 @@ localStorage.setItem(
 "lastAddedImage",
 card.dataset.image
 );
+let recentImages =
+JSON.parse(
+localStorage.getItem("recentImages")
+) || [];
+
+recentImages =
+recentImages.filter(
+img => img !== card.dataset.image
+);
+
+recentImages.push(card.dataset.image);
+
+recentImages = recentImages.slice(-3);
+
+localStorage.setItem(
+"recentImages",
+JSON.stringify(recentImages)
+);
 count = existing ? existing.quantity : 1;
 
 qty.innerText = count;
@@ -563,7 +581,9 @@ if(existing){
 
 existing.quantity++;
 
-}else{
+}
+
+else{
 
 cart.push({
 id: card.dataset.id,
@@ -574,6 +594,28 @@ quantity: 1
 });
 
 }
+localStorage.setItem(
+    "lastAddedImage",
+    card.dataset.image
+);
+let recentImages =
+JSON.parse(
+localStorage.getItem("recentImages")
+) || [];
+
+recentImages =
+recentImages.filter(
+img => img !== card.dataset.image
+);
+
+recentImages.push(card.dataset.image);
+
+recentImages = recentImages.slice(-3);
+
+localStorage.setItem(
+"recentImages",
+JSON.stringify(recentImages)
+);
 
 localStorage.setItem(
 "cart",
@@ -1127,7 +1169,22 @@ cart
 .map(item => item.image)
 .slice(-3)
 .reverse();
+const lastImage =
+localStorage.getItem("lastAddedImage");
 
+if(lastImage){
+
+    recentImages.unshift(lastImage);
+
+    const uniqueImages =
+    [...new Set(recentImages)];
+
+    recentImages.length = 0;
+
+    recentImages.push(
+        ...uniqueImages.slice(0,3)
+    );
+}
 document.getElementById("img1").style.display =
 recentImages[0] ? "block" : "none";
 
