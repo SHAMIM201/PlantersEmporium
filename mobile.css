@@ -313,29 +313,24 @@ font-size:20px;
 }
 @media(max-width:768px){
 
+.youtube-btn,
+.facebook-btn,
+.instagram-btn{
+    display:none !important;
+}
+
 .whatsapp{
-    bottom:90px !important;
+    bottom:100px !important;
 }
 
 .call-btn{
-    bottom:140px !important;
-}
-
-.instagram-btn{
-    bottom:190px !important;
-}
-
-.facebook-btn{
-    bottom:240px !important;
-}
-
-.youtube-btn{
-    bottom:290px !important;
+    bottom:160px !important;
 }
 
 #aiButton{
-    bottom:340px !important;
+    bottom:220px !important;
 }
+
 
 }
 @media(max-width:768px){
