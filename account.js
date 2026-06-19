@@ -62,7 +62,25 @@ password
 .then(()=>{
 
 alert("Login Success");
-window.location.href = "profile.html";
+
+const redirectPage =
+localStorage.getItem("redirectAfterLogin");
+
+if(redirectPage){
+
+localStorage.removeItem(
+"redirectAfterLogin"
+);
+
+window.location.href =
+redirectPage;
+
+}else{
+
+window.location.href =
+"profile.html";
+
+}
 
 })
 .catch(err=>{
@@ -80,9 +98,18 @@ onAuthStateChanged(auth,user=>{
 
 const info =
 document.getElementById("userInfo");
+const authBox =
+document.getElementById("authBox");
+
+const logoutBtn =
+document.getElementById("logoutBtn");
 
 if(user){
-document.getElementById("authBox").style.display = "none";
+
+authBox.style.display = "none";
+
+logoutBtn.style.display = "block";
+
 info.innerHTML =
 "Logged In: " + user.email;
 
@@ -115,7 +142,11 @@ localStorage.getItem("profileAddress")
 
 }
 }else{
-document.getElementById("authBox").style.display = "block";
+
+authBox.style.display = "block";
+
+logoutBtn.style.display = "none";
+
 info.innerHTML =
 "Not Logged In";
 

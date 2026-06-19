@@ -9,6 +9,9 @@ doc,
 updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const urlParams = new URLSearchParams(window.location.search);
+
+const orderNumber = urlParams.get("order");
 
 const firebaseConfig = {
 apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
@@ -23,12 +26,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 window.trackOrder = async function(){
+    
+let orderId;
+let phoneNumber;
 
-const orderId =
+if(orderNumber){
+
+orderId = orderNumber;
+
+}else{
+
+orderId =
 document.getElementById("orderId").value.trim();
 
-const phoneNumber =
+phoneNumber =
 document.getElementById("phoneNumber").value.trim();
+
+}
+
 
 const result =
 document.getElementById("result");
@@ -38,10 +53,17 @@ if(!orderId){
     return;
 }
 
+if(!orderNumber){
+
 if(!phoneNumber){
-    result.innerHTML =
-    "<p style='color:red'>Please enter Mobile Number</p>";
-    return;
+
+result.innerHTML =
+"<p style='color:red'>Please enter Mobile Number</p>";
+
+return;
+
+}
+
 }
 
 result.innerHTML =
@@ -62,8 +84,11 @@ const order = doc.data();
 const history = order.trackingHistory || [];
 
 if(
-    order.orderNumber === orderId &&
-    order.phone === phoneNumber
+order.orderNumber === orderId &&
+(
+orderNumber ||
+order.phone === phoneNumber
+)
 ){
 
 found = true;
@@ -497,3 +522,8 @@ alert("Failed to cancel order");
 }
 
 };
+if(orderNumber){
+
+trackOrder();
+
+}

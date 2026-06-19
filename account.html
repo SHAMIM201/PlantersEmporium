@@ -10,7 +10,7 @@
 <body>
 
 <div class="account-box">
-
+<div id="authBox">
 <h2>Login / Signup</h2>
 
 <input type="email" id="email" placeholder="Email">
@@ -21,11 +21,17 @@
 
 <button onclick="login()">Login</button>
 
-<button onclick="logout()">Logout</button>
+
 
 <p id="userInfo"></p>
 
 </div>
+<button
+id="logoutBtn"
+onclick="logout()"
+style="display:none;">
+Logout
+</button>
 
 <script type="module" src="account.js"></script>
 
