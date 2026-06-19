@@ -820,7 +820,7 @@ setupQuantityButtons();
 
 let position = 0;
 const cardWidth =
-window.innerWidth <= 768 ? 180 : 320;
+window.innerWidth <= 768 ? 170 : 320;
 
 setInterval(() => {
 

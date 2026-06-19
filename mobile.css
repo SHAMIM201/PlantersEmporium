@@ -125,7 +125,8 @@ header{
 
 .product-grid{
     grid-template-columns:1fr 1fr !important;
-    gap:10px;
+    gap:12px;
+    align-items:start;
 }
 
 .product-card{
@@ -146,16 +147,7 @@ header{
     font-size:16px !important;
 }
 
-/* Featured Slider */
 
-.slide-card{
-    min-width:150px !important;
-    width:150px !important;
-}
-
-.slide-card img{
-    height:120px !important;
-}
 
 .slide-btn{
     width:35px;
@@ -319,13 +311,33 @@ font-size:20px;
 }
 
 }
+@media(max-width:768px){
 
-.whatsapp{bottom:90px !important;}
-.call-btn{bottom:140px !important;}
-.instagram-btn{bottom:190px !important;}
-.facebook-btn{bottom:240px !important;}
-.youtube-btn{bottom:290px !important;}
-#aiButton{bottom:340px !important;}
+.whatsapp{
+    bottom:90px !important;
+}
+
+.call-btn{
+    bottom:140px !important;
+}
+
+.instagram-btn{
+    bottom:190px !important;
+}
+
+.facebook-btn{
+    bottom:240px !important;
+}
+
+.youtube-btn{
+    bottom:290px !important;
+}
+
+#aiButton{
+    bottom:340px !important;
+}
+
+}
 @media(max-width:768px){
 
 .qty-box{
@@ -347,12 +359,17 @@ font-size:20px;
 @media(max-width:768px){
 
 .slide-card{
-    min-width:180px !important;
-    width:180px !important;
+    min-width:160px !important;
+    width:160px !important;
+}
+
+.slide-card img{
+    height:130px !important;
+    object-fit:contain !important;
 }
 
 .product-card{
-    min-height:auto !important;
+    min-height:320px !important;
 }
 
 }
