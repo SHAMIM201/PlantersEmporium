@@ -820,11 +820,10 @@ setupQuantityButtons();
 
 let position = 0;
 const cardWidth =
-window.innerWidth <= 768 ? 170 : 320;
-
+window.innerWidth <= 768 ? 160 : 320;
 setInterval(() => {
 
-position += cardWidth;
+position += (cardWidth + 12);
 
 track.style.transition =
 "transform 0.5s ease";

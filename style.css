@@ -1128,18 +1128,18 @@ nav ul{
     width: 100%;
 }
 
+
 .slider-track{
-    display: flex;
-    gap: 20px;
-    width: max-content;
-    transition: transform 0.5s ease;
+    display:flex;
+    gap:12px;
+    width:max-content;
+    transition:transform .5s ease;
 }
 
 .slide-card{
-    min-width: 300px;
-    flex-shrink: 0;
+    min-width:250px;
+    flex-shrink:0;
 }
-
 .slide-card img{
     width: 100%;
     height: 250px;
@@ -1544,11 +1544,9 @@ img{
 }
 
 .product-card{
-     min-width:170px !important;
-    width:170px !important;
-    flex-shrink:0;
+    width:100% !important;
+    min-width:0 !important;
 }
-
 
 /* Featured Products */
 
@@ -1837,11 +1835,10 @@ header{
 /* BEST SELLER CARD FIX */
 
 
-
 .product-card img{
     width:100%;
-    height:260px;
-    object-fit:cover;
+    height:150px;
+    object-fit:contain;
     border-radius:12px;
 }
 
