@@ -422,3 +422,39 @@ font-size:20px;
 }
 
 }
+
+/* PRODUCT DETAILS MOBILE FIX */
+
+@media (max-width:768px){
+
+.product-detail{
+    display:flex !important;
+    flex-direction:column !important;
+    padding:15px !important;
+    gap:15px !important;
+}
+
+.product-detail img{
+    width:100% !important;
+    max-width:100% !important;
+    height:auto !important;
+}
+
+.detail-content{
+    max-width:100% !important;
+    width:100% !important;
+}
+
+.detail-content h1{
+    font-size:28px !important;
+}
+
+.detail-content .price{
+    font-size:24px !important;
+}
+
+body{
+    overflow-x:hidden !important;
+}
+
+}

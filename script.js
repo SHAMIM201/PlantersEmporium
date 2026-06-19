@@ -721,6 +721,7 @@ card.querySelector("h3").innerText;
 
 document.getElementById("popupImage").src =
 image;
+
 document.getElementById("popupTitle").innerText =
 title;
 
