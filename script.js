@@ -275,7 +275,7 @@ data-price="${product.price}"
 data-image="${product.image}">
 
 <img src="${product.image}" alt="${product.name}">
-
+<button class="wishlist-btn">🤍</button>
 <h3>${product.name}</h3>
 
 <p class="price">
@@ -317,6 +317,7 @@ Out Of Stock
 
 setupQuantityButtons();
 initializeFeaturedSlider();
+markWishlistItems();
 
 } catch(error) {
 
@@ -350,6 +351,9 @@ data-price="${product.price}"
 data-image="${product.image}">
 
 <img src="${product.image}" alt="${product.name}">
+
+<button class="wishlist-btn">🤍</button>
+
 <h3>${product.name}</h3>
 
 <p class="price">
@@ -685,6 +689,11 @@ e.target.closest(".slide-card, .product-card");
 
 if(!card) return;
 if(
+e.target.classList.contains("wishlist-btn")
+){
+return;
+}
+if(
 !e.target.classList.contains("add-btn") &&
 !e.target.classList.contains("plus") &&
 !e.target.classList.contains("minus")
@@ -810,7 +819,8 @@ track.appendChild(clone);
 setupQuantityButtons();
 
 let position = 0;
-const cardWidth = 320;
+const cardWidth =
+window.innerWidth <= 768 ? 180 : 320;
 
 setInterval(() => {
 
@@ -907,8 +917,9 @@ data-name="${product.name}"
 data-price="${product.price}"
 data-image="${product.image}">
 
-<img src="${product.image}"
-alt="${product.name}">
+<img src="${product.image}" alt="${product.name}">
+
+<button class="wishlist-btn">🤍</button>
 <h3>${product.name}</h3>
 
 <p class="price">
@@ -1533,3 +1544,93 @@ messages.scrollTop =
 messages.scrollHeight;
 
 });
+// ==========================
+// WISHLIST
+// ==========================
+
+document.addEventListener("click", function(e){
+
+if(!e.target.classList.contains("wishlist-btn"))
+return;
+
+e.stopPropagation();
+
+const card =
+e.target.closest(".product-card, .slide-card");
+
+const product = {
+id: card.dataset.id,
+name: card.dataset.name,
+price: card.dataset.price,
+image: card.dataset.image
+};
+
+let wishlist =
+JSON.parse(localStorage.getItem("wishlist")) || [];
+
+const index =
+wishlist.findIndex(item => item.id === product.id);
+
+if(index > -1){
+
+wishlist.splice(index,1);
+
+e.target.innerHTML = "🤍";
+
+}else{
+
+wishlist.push(product);
+
+e.target.innerHTML = "❤️";
+
+}
+
+localStorage.setItem(
+"wishlist",
+JSON.stringify(wishlist)
+);
+
+updateWishlistCount();
+markWishlistItems();
+});
+function updateWishlistCount(){
+
+const wishlist =
+JSON.parse(localStorage.getItem("wishlist")) || [];
+
+const count =
+document.getElementById("wishlist-count");
+
+if(count){
+count.innerText = wishlist.length;
+}
+
+}
+
+updateWishlistCount();
+
+function markWishlistItems(){
+
+const wishlist =
+JSON.parse(localStorage.getItem("wishlist")) || [];
+
+document
+.querySelectorAll(".wishlist-btn")
+.forEach(btn=>{
+
+const card =
+btn.closest(".product-card,.slide-card");
+
+if(!card) return;
+
+const exists =
+wishlist.some(
+item => item.id === card.dataset.id
+);
+
+btn.innerHTML =
+exists ? "❤️" : "🤍";
+
+});
+
+}

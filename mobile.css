@@ -221,10 +221,7 @@ header{
 
 /* Floating Cart */
 
-.floating-cart{
-    width:92% !important;
-    bottom:70px !important;
-}
+
 
 /* Mini Cart */
 
@@ -322,9 +319,40 @@ font-size:20px;
 }
 
 }
+
 .whatsapp{bottom:90px !important;}
 .call-btn{bottom:140px !important;}
 .instagram-btn{bottom:190px !important;}
 .facebook-btn{bottom:240px !important;}
 .youtube-btn{bottom:290px !important;}
 #aiButton{bottom:340px !important;}
+@media(max-width:768px){
+
+.qty-box{
+    max-width:120px !important;
+    height:40px;
+}
+
+.qty-btn{
+    width:35px !important;
+    height:40px !important;
+    font-size:22px !important;
+}
+
+.qty-number{
+    font-size:20px !important;
+}
+
+}
+@media(max-width:768px){
+
+.slide-card{
+    min-width:180px !important;
+    width:180px !important;
+}
+
+.product-card{
+    min-height:auto !important;
+}
+
+}
