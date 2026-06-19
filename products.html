@@ -182,15 +182,8 @@ document.getElementById("sortFilter");
 
 let allProducts = [];
 async function loadProducts(){
-    allProducts.push({
-  id: doc.id,
-  ...product,
-  keywords: (
-    product.name +
-    " " +
-    (product.category || "")
-  ).toLowerCase()
-});
+
+allProducts = [];
 
 const querySnapshot =
 await getDocs(collection(db,"products"));
@@ -198,32 +191,16 @@ await getDocs(collection(db,"products"));
 querySnapshot.forEach((doc)=>{
 
 const product = doc.data();
+
 allProducts.push({
 id: doc.id,
 ...product
 });
 
-productsDiv.innerHTML += `
-
-<div class="card"
-style="cursor:pointer"
-onclick="location.href='product.html?id=${doc.id}'">
-
-<img src="${product.image}">
-
-<h3>${product.name}</h3>
-
-<p class="price">
-₹${product.price}
-</p>
-
-</div>
-
-`;
-
 });
 
 }
+
 
 
 
@@ -314,51 +291,7 @@ renderProducts
 loadProducts().then(() => {
 renderProducts();
 });
-function searchByKeywords(keywords){
 
-const words = keywords
-.toLowerCase()
-.split(",")
-.map(k => k.trim());
-
-const filteredProducts =
-allProducts.filter(product => {
-
-const text =
-(
-product.name + " " +
-(product.category || "")
-).toLowerCase();
-
-return words.some(word =>
-text.includes(word)
-);
-
-});
-
-productsDiv.innerHTML = "";
-
-filteredProducts.forEach(product => {
-
-productsDiv.innerHTML += `
-
-<div class="card"
-style="cursor:pointer"
-onclick="location.href='product.html?id=${product.id}'">
-
-<img src="${product.image}">
-
-<h3>${product.name}</h3>
-
-<p class="price">
-₹${product.price}
-</p>
-
-</div>
-
-`;
-
-});
 imageSearch.addEventListener("change", () => {
 
 const file = imageSearch.files[0];
@@ -386,11 +319,28 @@ searchBox.value =
 }
 
 renderProducts();
+imageSearch.addEventListener("change", () => {
 
-});
+const file = imageSearch.files[0];
 
+if(!file) return;
+
+const fileName = file.name.toLowerCase();
+
+if(fileName.includes("water")){
+    searchBox.value = "Watering Can";
+}
+else if(fileName.includes("basket")){
+    searchBox.value = "Basket";
+}
+else{
+    searchBox.value = "Pot";
 }
 
+renderProducts();
+
+});
+});
 </script>
 
 </body>
