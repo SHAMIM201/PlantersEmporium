@@ -33,6 +33,63 @@ gtag('js', new Date());
 
 gtag('config', 'G-NHDB8LZE2N');
 </script>
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+getDoc,
+setDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
+authDomain: "samim-d6b27.firebaseapp.com",
+projectId: "samim-d6b27",
+storageBucket: "samim-d6b27.firebasestorage.app",
+messagingSenderId: "147210923031",
+appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
+
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const visitorRef =
+doc(db,"analytics","visitors");
+
+const visitorSnap =
+await getDoc(visitorRef);
+
+if(visitorSnap.exists()){
+
+const current =
+visitorSnap.data().count || 0;
+
+await setDoc(
+visitorRef,
+{
+count: current + 1
+}
+);
+
+}else{
+
+await setDoc(
+visitorRef,
+{
+count: 1
+}
+);
+
+}
+
+</script>
 <meta property="og:title" content="Planters Emporium">
 <meta property="og:description" content="Premium Pots, Planters & Garden Accessories">
 <meta property="og:url" content="https://plantersemporium.online/">
