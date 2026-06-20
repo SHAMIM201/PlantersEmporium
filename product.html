@@ -390,6 +390,19 @@ if(productSnap.exists()){
 
 const product =
 productSnap.data();
+if (typeof gtag === "function") {
+
+gtag("event", "view_item", {
+currency: "INR",
+value: Number(product.price),
+items: [{
+item_id: id,
+item_name: product.name,
+price: Number(product.price)
+}]
+});
+
+}
 
 document.getElementById("productName")
 .innerText = product.name;
@@ -578,7 +591,20 @@ Add To Cart
 `;
 
 document.getElementById("addToCartBtn").onclick=()=>{
+if (typeof gtag === "function") {
 
+gtag("event", "add_to_cart", {
+currency: "INR",
+value: Number(product.price),
+items: [{
+item_id: id,
+item_name: product.name,
+price: Number(product.price),
+quantity: 1
+}]
+});
+
+}
 cart.push({
 id:id,
 name:product.name,
