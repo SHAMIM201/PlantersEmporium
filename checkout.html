@@ -412,9 +412,17 @@ const response = await emailjs.send(
 {
 customer_name: name,
 order_id: orderNumber,
+customer_email: auth.currentUser.email,
+total_amount: total,
 tracking_link: trackLink,
 invoice_link: invoiceLink,
-to_email: auth.currentUser.email
+
+product_list: cart
+.map(
+item =>
+`${item.name} x ${item.quantity || 1} = ₹${item.price}`
+)
+.join("<br>")
 }
 );
 
