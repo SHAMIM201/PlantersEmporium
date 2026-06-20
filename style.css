@@ -3502,3 +3502,22 @@ font-weight:bold;
 }
 
 }
+.pincode-checker{
+margin:20px 0;
+padding:15px;
+background:#f5f5f5;
+border-radius:12px;
+}
+
+.pincode-checker input{
+padding:10px;
+border:1px solid #ddd;
+border-radius:8px;
+width:180px;
+margin-right:10px;
+}
+
+#delivery-result{
+margin-top:10px;
+font-weight:bold;
+}
