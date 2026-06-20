@@ -44,6 +44,12 @@ href="#"
 class="order-btn">
 WhatsApp Tracking
 </a>
+<a id="invoiceBtn"
+href="#"
+class="order-btn">
+Download Invoice
+</a>
+
 
 </div>
 </div>
@@ -64,6 +70,8 @@ const trackingLink =
 window.location.origin +
 "/track-order.html?order=" +
 orderNo;
+document.getElementById("invoiceBtn").href =
+"invoice.html?order=" + orderNo;
 
 document.getElementById("whatsappBtn")
 .href =

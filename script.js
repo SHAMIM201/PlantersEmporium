@@ -1286,7 +1286,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         reader.onload = async function () {
 
-            const base64 = reader.result.split(",")[1];
+          const base64 = reader.result;
 
             try {
 
@@ -1303,9 +1303,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 );
 
-                const data = await response.json();
+               const data = await response.json();
 
-                console.log("FULL AI DATA:", data);
+console.log("FULL AI DATA:", data);
+
+alert(JSON.stringify(data));
+
 
                 if (!data.success) {
                     alert("AI Error: " + (data.error || "Unknown Error"));
@@ -1314,6 +1317,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // AI keywords
                 let keywords = data.keywords || "";
+                keywords = keywords.toLowerCase();
+
+if(keywords.includes("square")){
+    keywords = "Orchid Square";
+}
+else if(keywords.includes("pot")){
+    keywords = "Designer Pot";
+}
+else if(keywords.includes("planter")){
+    keywords = "Fiber glass pot";
+}
+else if(keywords.includes("basket")){
+    keywords = "Basket";
+}
+else if(keywords.includes("tank")){
+    keywords = "Water Tank";
+}
                 const keywordMap = {
   "garden": "Garden Pot",
   "planter": "Designer Pot",
@@ -1342,6 +1362,7 @@ for (const key in keywordMap) {
                          document.getElementById("searchInput");
                          if (searchInput) {
                                 searchInput.value = keywords;
+                                showAISimilarProducts(data.keywords);
 
                                 searchInput.dispatchEvent(
                              new Event("input", { bubbles: true })
@@ -1702,5 +1723,82 @@ document.getElementById(
 "⚠ Try Again";
 
 }
+
+}
+const imageSearch =
+document.getElementById("imageSearch");
+
+const aiSearchBtn =
+document.getElementById("aiSearchBtn");
+
+aiSearchBtn?.addEventListener("click",()=>{
+
+if(!imageSearch.files[0]){
+alert("Please select image first");
+return;
+}
+
+imageSearch.dispatchEvent(
+new Event("change")
+);
+
+});
+function showAISimilarProducts(keywords){
+
+console.log("AI Function Running");
+console.log("Keywords:", keywords);
+
+ const section =
+document.getElementById(
+"aiResultsSection"
+);
+
+const container =
+document.getElementById(
+"aiProducts"
+);
+
+if(!section || !container) return;
+
+section.style.display = "block";
+
+container.innerHTML = "";
+
+const words =
+keywords.toLowerCase()
+.split(",")
+.map(x => x.trim());
+
+allProducts.forEach(product=>{
+
+const name =
+product.name.toLowerCase();
+
+const matched =
+words.some(word =>
+name.includes(word)
+);
+
+if(matched){
+
+container.innerHTML += `
+
+<div class="product-card">
+
+<img src="${product.image}">
+
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+</div>
+
+`;
+
+}
+
+});
 
 }

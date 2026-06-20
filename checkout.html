@@ -6,7 +6,7 @@
 <title>Checkout</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="mobile.css">
-
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -197,6 +197,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+emailjs.init("UsZWMxOrYY7R5I7ob");
+console.log("EmailJS Initialized");
+
 const db = getFirestore(app);
 const auth = getAuth(app);
 const cart =
@@ -305,6 +308,7 @@ pincode,
 email: auth.currentUser.email,
 userId: auth.currentUser.uid,
 
+
 cart:
 JSON.parse(localStorage.getItem("cart")) || [],
 
@@ -387,6 +391,42 @@ await addDoc(
 collection(db,"orders"),
 order
 );
+try{
+
+const trackLink =
+window.location.origin +
+"/track-order.html?order=" +
+orderNumber;
+
+const invoiceLink =
+window.location.origin +
+"/invoice.html?order=" +
+orderNumber;
+console.log("Sending Email...");
+const response = await emailjs.send(
+"service_z5fnazh",
+"template_1r9objx",
+{
+customer_name: name,
+order_id: orderNumber,
+tracking_link: trackLink,
+invoice_link: invoiceLink,
+to_email: auth.currentUser.email
+}
+);
+
+console.log("EmailJS Response:", response);
+
+}
+catch(emailError){
+
+console.error(
+"Email Error:",
+emailError
+);
+
+}
+
 
 localStorage.removeItem("cart");
 localStorage.removeItem("cartCount");

@@ -3587,3 +3587,17 @@ font-weight:bold;
     margin-top:20px;
     font-weight:600;
 }
+.ai-search-btn{
+background:#0b5d1e;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+margin-left:10px;
+}
+
+.ai-search-btn:hover{
+opacity:.9;
+}

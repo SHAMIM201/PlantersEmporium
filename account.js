@@ -8,6 +8,12 @@ signOut,
 onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+getFirestore,
+collection,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
@@ -20,6 +26,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+
 
 window.signup = function(){
 
@@ -153,3 +163,72 @@ info.innerHTML =
 }
 
 });
+const uploadBtn =
+document.getElementById("uploadPhotoBtn");
+
+if(uploadBtn){
+
+uploadBtn.addEventListener("click", async ()=>{
+
+try{
+
+const file =
+document.getElementById("customerPhoto").files[0];
+
+if(!file){
+alert("Please Select Image");
+return;
+}
+
+const user = auth.currentUser;
+
+if(!user){
+alert("Please Login First");
+return;
+}
+
+const formData = new FormData();
+
+formData.append("file", file);
+
+formData.append(
+"upload_preset",
+"plantersemporium"
+);
+
+const response = await fetch(
+"https://api.cloudinary.com/v1_1/da7pwkapr/image/upload",
+{
+method:"POST",
+body:formData
+}
+);
+
+const data =
+await response.json();
+
+await addDoc(
+collection(db,"customerInstallations"),
+{
+email:user.email,
+image:data.secure_url,
+approved:false,
+createdAt:new Date()
+}
+);
+
+document.getElementById(
+"uploadStatus"
+).innerHTML =
+"✅ Photo Uploaded Successfully";
+
+}catch(error){
+
+console.error(error);
+alert(error.message);
+
+}
+
+});
+
+}
