@@ -537,6 +537,17 @@ localStorage.setItem("cartCount", cartCount);
 
 document.getElementById("cart-count").innerText =
 cartCount;
+if (typeof gtag === "function") {
+  gtag("event", "add_to_cart", {
+    currency: "INR",
+    value: parseInt(card.dataset.price),
+    items: [{
+      item_name: card.dataset.name,
+      price: parseInt(card.dataset.price),
+      quantity: 1
+    }]
+  });
+}
 updateCartCounter();
 
 });
