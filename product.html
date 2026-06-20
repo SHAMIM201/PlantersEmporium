@@ -479,6 +479,18 @@ document.querySelector(
 document.getElementById("whatsappBtn")
 .href =
 `https://wa.me/919810475303?text=I want to order ${product.name}`;
+document.getElementById("whatsappBtn")
+.addEventListener("click",()=>{
+
+if(typeof gtag === "function"){
+
+gtag("event","whatsapp_click",{
+item_name: product.name
+});
+
+}
+
+});
 
 document.getElementById("productDescription").innerText =
 product.description ||

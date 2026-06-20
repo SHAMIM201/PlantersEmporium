@@ -456,7 +456,13 @@ message +=
 
 message +=
 `%0A💰 Total Amount = ₹${total}%0A`;
+if(typeof gtag === "function"){
 
+gtag("event","whatsapp_order_click",{
+value: total
+});
+
+}
 window.open(
 `https://wa.me/919810475303?text=${message}`,
 "_blank"
