@@ -21,6 +21,25 @@ gtag('config', 'G-NHDB8LZE2N');
 
 <link rel="stylesheet" href="style.css">
 <style>
+    .review-chip{
+background:#eef8f0;
+padding:10px 15px;
+border-radius:30px;
+font-weight:600;
+}
+
+@media(max-width:768px){
+
+#customerPhotos{
+grid-template-columns:
+2fr 1fr 1fr !important;
+grid-auto-rows:90px !important;
+}
+
+.review-chip{
+font-size:13px;
+}
+}
 body{
 font-family:Poppins,sans-serif;
 padding:30px;
@@ -184,7 +203,8 @@ justify-content:center;
 align-items:center;
 z-index:99999;">
 
-<img id="popupImg" style="
+<img id="popupImg" 
+style="
 max-width:90%;
 max-height:90%;
 border-radius:15px;">
@@ -340,6 +360,190 @@ Submit Review
 </button>
 
 </div>
+<div id="buyerPhotoSection"
+style="
+background:white;
+padding:20px;
+border-radius:15px;
+margin:30px auto;
+max-width:1200px;
+">
+
+<h3>📷 Share Product Photos & Videos</h3>
+
+<p>
+Show how this product looks at your home.
+Photos and videos help other customers.
+</p>
+
+<input
+type="file"
+id="customerPhoto"
+accept="image/*,video/*">
+
+<div style="
+margin-top:10px;
+font-size:14px;
+color:#666;">
+✅ Photos allowed<br>
+✅ Videos allowed<br>
+✅ Max size 50 MB
+</div>
+
+<button id="uploadProductPhoto">
+Upload Photo / Video
+</button>
+
+
+<p id="photoUploadStatus"></p>
+
+</div>
+
+<div id="ratingsSection"
+style="
+max-width:1200px;
+margin:50px auto;
+background:white;
+padding:20px;
+border-radius:20px;
+">
+
+<h2 style="margin-bottom:10px;">
+Ratings & Reviews
+</h2>
+
+<div style="
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:15px;">
+    
+<span style="
+font-size:50px;
+font-weight:bold;
+color:#2e7d32;">
+4.2 ★
+</span>
+
+<div>
+<div style="font-size:18px;">
+Very Good
+</div>
+
+<div style="color:#777;">
+Based on Customer Reviews
+</div>
+</div>
+
+</div>
+
+<div id="customerPhotos"
+style="
+display:grid;
+grid-template-columns:
+2fr 1fr 1fr;
+grid-auto-rows:120px;
+gap:10px;
+margin-top:20px;">
+</div>
+
+<div style="
+margin-top:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;">
+    
+<span class="review-chip">
+Quality ⭐ 4.2
+</span>
+
+<span class="review-chip">
+Design ⭐ 4.1
+</span>
+
+<span class="review-chip">
+Value ⭐ 4.3
+</span>
+
+<span class="review-chip">
+Delivery ⭐ 4.0
+</span>
+
+</div>
+
+</div>
+<div id="photoPopup" 
+style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.95);
+justify-content:center;
+align-items:center;
+z-index:999999;
+">
+
+<span
+onclick="closePhotoPopup()"
+style="
+position:absolute;
+top:20px;
+right:30px;
+font-size:50px;
+color:white;
+cursor:pointer;">
+×
+</span>
+
+<span
+onclick="prevPhoto()"
+style="
+position:absolute;
+left:20px;
+top:50%;
+transform:translateY(-50%);
+font-size:70px;
+color:white;
+cursor:pointer;
+user-select:none;">
+❮
+</span>
+<div id="popupMediaContainer"></div>
+<span
+onclick="nextPhoto()"
+style="
+position:absolute;
+right:20px;
+top:50%;
+transform:translateY(-50%);
+font-size:70px;
+color:white;
+cursor:pointer;
+user-select:none;">
+❯
+</span>
+<div
+id="photoCounter"
+style="
+position:absolute;
+bottom:25px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,.7);
+color:white;
+padding:10px 20px;
+border-radius:25px;
+font-weight:bold;">
+1 / 1
+</div>
+
+</div>
+
+
+
 <h2 style="
 margin-top:50px;
 margin-bottom:20px;
@@ -375,9 +579,9 @@ margin-top:20px;">
 </div>
 <script type="module">
 
+
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-
 
 import {
 getFirestore,
@@ -390,6 +594,12 @@ query,
 where
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 const firebaseConfig = {
 apiKey: "AIzaSyD85FuEhRolVMpXTuu34LgDMRVaT_R3Fek",
 authDomain: "samim-d6b27.firebaseapp.com",
@@ -401,6 +611,15 @@ appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+let currentUser = null;
+
+onAuthStateChanged(auth,(user)=>{
+
+currentUser = user;
+
+});
 
 const id =
 new URLSearchParams(
@@ -679,6 +898,45 @@ const schemaScript = document.createElement("script");
 schemaScript.type = "application/ld+json";
 schemaScript.textContent = JSON.stringify(schema);
 document.head.appendChild(schemaScript);
+const ordersQuery = query(
+collection(db,"orders")
+);
+
+const ordersSnap =
+await getDocs(ordersQuery);
+
+let purchased = false;
+
+ordersSnap.forEach((orderDoc)=>{
+
+const order = orderDoc.data();
+
+if(
+currentUser &&
+order.cart
+){
+
+order.cart.forEach((item)=>{
+
+if(item.id === id){
+
+purchased = true;
+
+}
+
+});
+
+}
+
+});
+
+if(purchased){
+
+document.getElementById(
+"buyerPhotoSection"
+).style.display = "block";
+
+}
 const reviewsContainer =
 document.getElementById("reviewsContainer");
 
@@ -729,6 +987,75 @@ box-shadow:0 2px 10px rgba(0,0,0,0.1);
 });
 
 }
+
+const photosQuery = query(
+collection(db,"customerPhotos"),
+where("productId","==",id)
+);
+const photosSnap =
+await getDocs(photosQuery);
+window.galleryImages = [];
+window.currentImageIndex = 0;
+const photosDiv =
+document.getElementById("customerPhotos");
+
+photosDiv.innerHTML = "";
+
+photosSnap.forEach((photoDoc)=>{
+
+
+const photo = photoDoc.data();
+console.log("PHOTO URL =", photo.url);
+window.galleryImages.push({
+url: photo.url,
+type: photo.fileType
+});
+
+photosDiv.innerHTML += `
+<div style="
+width:100%;
+height:100%;
+overflow:hidden;
+border-radius:12px;
+flex-shrink:0;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+">
+
+${photo.fileType?.startsWith("video/")
+? `
+<video
+src="${photo.url}"
+onclick="openPhotoPopup(${window.galleryImages.length-1})"
+style="
+width:100%;
+height:120px;
+object-fit:cover;
+border-radius:12px;
+cursor:pointer;"
+muted>
+</video>
+`
+:
+`
+<img
+src="${photo.url}"
+onclick="openPhotoPopup(${window.galleryImages.length-1})"
+style="
+width:100%;
+height:120px;
+object-fit:cover;
+border-radius:12px;
+cursor:pointer;">
+`
+}
+
+
+
+</div>
+`;
+
+});
 const relatedDiv =
 document.getElementById("relatedProducts");
 
@@ -779,6 +1106,10 @@ font-weight:bold;">
 </div>
 
 `;
+
+count++;
+
+});
 document.getElementById("submitReview")
 .addEventListener("click", async ()=>{
 
@@ -818,7 +1149,93 @@ alert("Review Submitted Successfully");
 location.reload();
 
 });
-count++;
+document.getElementById(
+"uploadProductPhoto"
+).addEventListener("click", async ()=>{
+
+if(!currentUser){
+alert("Please Login First");
+return;
+}
+
+const file =
+document.getElementById("customerPhoto").files[0];
+
+if(!file){
+alert("Please Select Photo or Video");
+return;
+}
+
+if(file.size > 50 * 1024 * 1024){
+alert("Maximum file size is 50 MB");
+return;
+}
+
+let cloudinaryUrl = "";
+
+if(file.type.startsWith("image/")){
+
+cloudinaryUrl =
+"https://api.cloudinary.com/v1_1/da7pwkapr/image/upload";
+
+}else if(file.type.startsWith("video/")){
+
+cloudinaryUrl =
+"https://api.cloudinary.com/v1_1/da7pwkapr/video/upload";
+
+}else{
+
+alert("Only Image or Video Allowed");
+return;
+
+}
+
+try{
+
+const formData = new FormData();
+
+formData.append("file", file);
+
+formData.append(
+"upload_preset",
+"plantersemporium"
+);
+
+const response = await fetch(
+cloudinaryUrl,
+{
+method:"POST",
+body:formData
+}
+);
+
+const data = await response.json();
+
+console.log(data);
+
+await addDoc(
+collection(db,"customerPhotos"),
+{
+productId:id,
+userEmail:currentUser.email,
+url:data.secure_url,
+fileType:file.type,
+approved:false,
+createdAt:new Date()
+}
+);
+
+alert("Photo Uploaded Successfully");
+
+location.reload();
+
+}catch(error){
+
+console.error(error);
+
+alert(error.message);
+
+}
 
 });
 }
@@ -883,6 +1300,105 @@ result.innerHTML =
 }
 
 }
+
+</script>
+<script>
+
+
+window.openPhotoPopup = function(index){
+
+window.currentImageIndex = index;
+
+const item =
+window.galleryImages[index];
+
+const container =
+document.getElementById(
+"popupMediaContainer"
+);
+
+if(item.type &&
+item.type.startsWith("video/")){
+
+container.innerHTML = `
+<video
+src="${item.url}"
+controls
+autoplay
+muted
+playsinline
+style="
+max-width:70vw;
+max-height:80vh;
+border-radius:15px;">
+</video>
+`;
+
+}else{
+
+container.innerHTML = `
+<img
+src="${item.url}"
+style="
+max-width:70vw;
+max-height:80vh;
+object-fit:contain;
+border-radius:15px;">
+`;
+
+}
+
+document.getElementById("photoCounter").innerText =
+(index + 1) + " / " +
+window.galleryImages.length;
+
+document.getElementById(
+"photoPopup"
+).style.display = "flex";
+
+};
+
+window.closePhotoPopup = function(){
+
+document.getElementById(
+"photoPopup"
+).style.display = "none";
+
+};
+
+window.nextPhoto = function(){
+
+window.currentImageIndex++;
+
+if(
+window.currentImageIndex >=
+window.galleryImages.length
+){
+window.currentImageIndex = 0;
+}
+
+openPhotoPopup(
+window.currentImageIndex
+);
+
+};
+
+window.prevPhoto = function(){
+
+window.currentImageIndex--;
+
+if(
+window.currentImageIndex < 0
+){
+window.currentImageIndex =
+window.galleryImages.length - 1;
+}
+
+openPhotoPopup(
+window.currentImageIndex
+);
+
+};
 
 </script>
 </body>
