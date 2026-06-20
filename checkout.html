@@ -391,6 +391,7 @@ await addDoc(
 collection(db,"orders"),
 order
 );
+console.log("Order Saved To Firebase");
 try{
 
 const trackLink =
@@ -403,9 +404,11 @@ window.location.origin +
 "/invoice.html?order=" +
 orderNumber;
 console.log("Sending Email...");
+console.log("Current User:", auth.currentUser);
+console.log("Email:", auth.currentUser?.email);
 const response = await emailjs.send(
 "service_z5fnazh",
-"template_1r9objx",
+"template_06sxj88",
 {
 customer_name: name,
 order_id: orderNumber,
