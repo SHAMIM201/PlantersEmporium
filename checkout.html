@@ -406,14 +406,20 @@ orderNumber;
 console.log("Sending Email...");
 console.log("Current User:", auth.currentUser);
 console.log("Email:", auth.currentUser?.email);
+console.log("Recipient:", auth.currentUser.email);
+
 const response = await emailjs.send(
 "service_z5fnazh",
 "template_06sxj88",
 {
+to_email: auth.currentUser.email,
+
 customer_name: name,
-order_id: orderNumber,
 customer_email: auth.currentUser.email,
+
+order_id: orderNumber,
 total_amount: total,
+
 tracking_link: trackLink,
 invoice_link: invoiceLink,
 
