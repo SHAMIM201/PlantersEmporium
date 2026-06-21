@@ -65,22 +65,8 @@ placeholder="Stock Quantity">
 
 <select id="category">
 
-<option value="">Select Category</option>
-
-<option value="Indoor Planters">
-Indoor Planters
-</option>
-
-<option value="Outdoor Planters">
-Outdoor Planters
-</option>
-
-<option value="Decorative Pots">
-Decorative Pots
-</option>
-
-<option value="Hanging Planters">
-Hanging Planters
+<option value="">
+Loading Categories...
 </option>
 
 </select>
@@ -110,7 +96,8 @@ from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import {
 getFirestore,
 collection,
-addDoc
+addDoc,
+getDocs
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -131,14 +118,54 @@ appId: "1:147210923031:web:04f6a9f5649183d8b1c052"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+async function loadCategoriesDropdown(){
+
+const categorySelect =
+document.getElementById("category");
+
+categorySelect.innerHTML =
+'<option value="">Select Category</option>';
+
+try{
+
+const snapshot =
+await getDocs(
+collection(db,"categories")
+);
+
+snapshot.forEach((doc)=>{
+
+const category = doc.data();
+
+categorySelect.innerHTML += `
+<option value="${category.name}">
+${category.name}
+</option>
+`;
+
+});
+
+}catch(error){
+
+console.error(
+"Category Load Error:",
+error
+);
+
+}
+
+}
 
 onAuthStateChanged(auth,(user)=>{
 
 if(!user){
 
 window.location.href = "admin.html";
+return;
 
 }
+
+loadCategoriesDropdown();
 
 });
 window.saveProduct = async function () {

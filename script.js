@@ -233,6 +233,172 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+async function loadCategories() {
+
+const categoryGrid =
+document.getElementById("categoryGrid");
+
+if(!categoryGrid) return;
+
+categoryGrid.innerHTML = "";
+
+try {
+
+const categorySnapshot =
+await getDocs(collection(db,"categories"));
+
+const productSnapshot =
+await getDocs(collection(db,"products"));
+
+const categories = {};
+
+categorySnapshot.forEach((doc)=>{
+
+const category = doc.data();
+
+categories[category.name] = {
+image: category.image || "",
+count: 0
+};
+
+});
+
+productSnapshot.forEach((doc)=>{
+
+const product = doc.data();
+
+if(
+product.category &&
+categories[product.category]
+){
+
+categories[product.category].count++;
+
+}
+
+});
+
+Object.keys(categories).forEach(category=>{
+
+categoryGrid.innerHTML += `
+
+<div class="category-card"
+data-category="${category}">
+
+<img
+src="${categories[category].image || 'images/default-category.jpg'}"
+alt="${category}"
+class="category-image">
+
+<h3>${category}</h3>
+
+<p class="category-count">
+${categories[category].count} Products
+</p>
+
+</div>
+
+`;
+
+});
+
+attachCategoryEvents();
+
+}catch(error){
+
+console.log(
+"Category Error:",
+error
+);
+
+}
+
+}
+function attachCategoryEvents(){
+
+document
+.querySelectorAll(".category-card")
+.forEach(card=>{
+
+card.addEventListener("click", async ()=>{
+
+const category =
+card.dataset.category;
+
+const section =
+document.getElementById(
+"categoryProductsSection"
+);
+
+const title =
+document.getElementById(
+"categoryTitle"
+);
+
+const grid =
+document.getElementById(
+"categoryProducts"
+);
+
+section.style.display = "block";
+
+title.innerText = category;
+
+grid.innerHTML = "";
+
+try{
+
+const snapshot =
+await getDocs(
+collection(db,"products")
+);
+
+snapshot.forEach((doc)=>{
+
+const product =
+doc.data();
+
+if(product.category !== category)
+return;
+
+grid.innerHTML += `
+
+<div class="product-card"
+data-id="${doc.id}"
+data-name="${product.name}"
+data-price="${product.price}"
+data-image="${product.image}">
+
+<img src="${product.image}" alt="${product.name}">
+
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price}
+</p>
+
+</div>
+
+`;
+
+});
+
+window.scrollTo({
+top: section.offsetTop - 100,
+behavior: "smooth"
+});
+
+}catch(error){
+
+console.log(error);
+
+}
+
+});
+
+});
+
+}
 async function loadFeaturedProducts() {
 
 const featuredTrack =
@@ -689,6 +855,7 @@ updateCartCounter();
 // Script Execute Functions
 loadFeaturedProducts();
 loadFirebaseProducts();
+loadCategories();
 // Dynamic attachment for hardcoded elements (Featured section)
 document.addEventListener("DOMContentLoaded", setupQuantityButtons);
 // PRODUCT POPUP
@@ -831,6 +998,43 @@ track.appendChild(clone);
 setupQuantityButtons();
 
 let position = 0;
+const prevBtn =
+document.querySelector(
+".product-slider-section .prev"
+);
+
+const nextBtn =
+document.querySelector(
+".product-slider-section .next"
+);
+
+nextBtn?.addEventListener("click",()=>{
+
+position += (cardWidth + 12);
+
+track.style.transition =
+"transform .5s ease";
+
+track.style.transform =
+`translateX(-${position}px)`;
+
+});
+
+prevBtn?.addEventListener("click",()=>{
+
+position -= (cardWidth + 12);
+
+if(position < 0){
+position = 0;
+}
+
+track.style.transition =
+"transform .5s ease";
+
+track.style.transform =
+`translateX(-${position}px)`;
+
+});
 const cardWidth =
 window.innerWidth <= 768 ? 160 : 320;
 setInterval(() => {
@@ -866,121 +1070,7 @@ track.style.transform =
 // CATEGORY FILTER
 // ==========================================
 
-document.querySelectorAll(".category-card")
-.forEach(card => {
 
-card.addEventListener("click", async () => {
-
-const category =
-card.dataset.category;
-
-const section =
-document.getElementById(
-"categoryProductsSection"
-);
-
-const title =
-document.getElementById(
-"categoryTitle"
-);
-
-const grid =
-document.getElementById(
-"categoryProducts"
-);
-
-section.style.display = "block";
-
-title.innerText = category;
-
-grid.innerHTML = "";
-
-try{
-
-const snapshot =
-await getDocs(
-collection(db,"products")
-);
-
-snapshot.forEach((doc)=>{
-
-const product =
-doc.data();
-
-const stock = product.stock || 0;
-const cart =
-JSON.parse(localStorage.getItem("cart")) || [];
-
-const cartItem =
-cart.find(item => item.name === product.name);
-
-const currentQty =
-cartItem ? cartItem.quantity : 0;
-if(product.category !== category)
-return;
-
-grid.innerHTML += `
-
-
-<div class="product-card"
-data-id="${doc.id}"
-data-name="${product.name}"
-data-price="${product.price}"
-data-image="${product.image}">
-
-<img src="${product.image}" alt="${product.name}">
-
-<button class="wishlist-btn">🤍</button>
-<h3>${product.name}</h3>
-
-<p class="price">
-₹${product.price}
-</p>
-<div class="cart-control">
-
-${stock > 0 ? `
-<button class="add-btn">
-Add Now
-</button>
-` : `
-<button
-style="
-background:#ccc;
-color:#666;
-cursor:not-allowed;
-">
-Out Of Stock
-</button>
-`}
-
-<div class="qty-box" style="display:none;">
-<button class="qty-btn minus">−</button>
-<span class="qty-number">0</span>
-<button class="qty-btn plus">+</button>
-</div>
-
-</div>
-
-</div>
-
-`;
-
-});
-setupQuantityButtons();
-window.scrollTo({
-top: section.offsetTop - 100,
-behavior: "smooth"
-});
-
-}catch(error){
-
-console.log(error);
-
-}
-
-});
-
-});
 // ==========================================
 // GALLERY POPUP
 // ==========================================
@@ -1800,5 +1890,35 @@ container.innerHTML += `
 }
 
 });
+
+}
+const catPrev =
+document.getElementById("catPrev");
+
+const catNext =
+document.getElementById("catNext");
+
+const categoryGrid =
+document.getElementById("categoryGrid");
+
+if(catPrev && catNext){
+
+catNext.onclick = ()=>{
+
+categoryGrid.scrollBy({
+left:350,
+behavior:"smooth"
+});
+
+};
+
+catPrev.onclick = ()=>{
+
+categoryGrid.scrollBy({
+left:-350,
+behavior:"smooth"
+});
+
+};
 
 }

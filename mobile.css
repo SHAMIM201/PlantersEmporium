@@ -496,3 +496,46 @@ body{
 }
 
 }
+/* CATEGORY SLIDER BUTTONS */
+
+#categories{
+position:relative;
+}
+
+#catPrev,
+#catNext{
+
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+
+width:55px;
+height:55px;
+
+border:none;
+border-radius:50%;
+
+background:#0b7a29;
+color:#fff;
+
+font-size:24px;
+font-weight:bold;
+
+cursor:pointer;
+z-index:999;
+
+box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+#catPrev{
+left:10px;
+}
+
+#catNext{
+right:10px;
+}
+
+#catPrev:hover,
+#catNext:hover{
+background:#09541c;
+}
